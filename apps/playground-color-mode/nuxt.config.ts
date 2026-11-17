@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   modules: ['@nuxtjs/color-mode', 'nuxt-penumbra'],
   colorMode: { classSuffix: '', storage: 'cookie', fallback: 'light' },
   penumbra: { transition: 'circle', duration: 600 },
-  app: { head: { title: 'nuxt-penumbra playground' } },
+  app: { head: { title: 'nuxt-penumbra playground', htmlAttrs: { lang: 'en' } } },
   experimental: { viewTransition: true },
   devtools: { enabled: false },
 })

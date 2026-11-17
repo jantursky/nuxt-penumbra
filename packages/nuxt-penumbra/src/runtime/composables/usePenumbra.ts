@@ -1,6 +1,6 @@
 import { computed, type ComputedRef } from 'vue'
 
-import { useNuxtApp } from '#imports'
+import { useNuxtApp, useRuntimeConfig } from '#imports'
 
 import type { Controller, SetThemeOptions } from '../controller'
 import { useThemeState } from '../state'
@@ -20,14 +20,20 @@ export interface Penumbra {
   toggleTheme: (options?: SetThemeOptions) => void
 }
 
+const fallback = (preference: string, themes: readonly string[]): string =>
+  preference !== 'system' ? preference : themes.includes('light') ? 'light' : (themes[0] ?? 'light')
+
 export function usePenumbra(): Penumbra {
   const nuxtApp = useNuxtApp()
   const state = useThemeState()
   const injected = nuxtApp.$penumbra as (Controller & { themes: readonly string[] }) | undefined
+  const injectedThemes = injected?.themes ?? useRuntimeConfig().public.penumbra.themes
   return {
-    theme: computed(() => state.value),
+    // Until color-mode has resolved "system" in the browser, `value` is still the string "system": show the visitor's
+    // concrete choice if there is one, else the first light theme.
+    theme: computed(() => (state.value === 'system' ? fallback(state.preference, injectedThemes) : state.value)),
     preference: computed(() => state.preference),
-    themes: injected?.themes ?? [],
+    themes: injectedThemes,
     // On the server there is no page to animate: writing the preference is all a theme change means there.
     setTheme: (preference, options) => {
       if (injected) injected.setTheme(preference, options)

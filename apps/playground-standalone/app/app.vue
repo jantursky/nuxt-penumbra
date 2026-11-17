@@ -4,18 +4,21 @@ const { theme, preference, toggleTheme, setTheme } = usePenumbra()
 
 <template>
   <div class="page">
-    <nav>
-      <NuxtLink to="/">Home</NuxtLink>
-      <NuxtLink to="/about">About</NuxtLink>
-    </nav>
-    <p>
-      theme: <b data-testid="theme">{{ theme }}</b> / preference: <b data-testid="preference">{{ preference }}</b>
-    </p>
-    <button data-testid="toggle" @click="(event) => toggleTheme({ origin: event })">Toggle</button>
-    <button data-testid="set-dark" @click="setTheme('dark')">Dark</button>
-    <button data-testid="set-sepia" @click="setTheme('sepia')">Sepia</button>
-    <button data-testid="set-system" @click="setTheme('system')">System</button>
-    <NuxtPage />
+    <header>
+      <nav aria-label="Main">
+        <NuxtLink to="/">Home</NuxtLink>
+        <NuxtLink to="/about">About</NuxtLink>
+      </nav>
+      <p>
+        theme: <b data-testid="theme">{{ theme }}</b> / preference: <b data-testid="preference">{{ preference }}</b>
+      </p>
+      <button data-testid="toggle" @click="(event) => toggleTheme({ origin: event })">Toggle</button>
+      <button data-testid="set-dark" @click="setTheme('dark')">Dark</button>
+      <button data-testid="set-sepia" @click="setTheme('sepia')">Sepia</button>
+      <button data-testid="set-system" @click="setTheme('system')">System</button>
+      <PenumbraToggle data-testid="penumbra-toggle" transition="wipe" />
+    </header>
+    <main><NuxtPage /></main>
   </div>
 </template>
 
@@ -41,6 +44,9 @@ body {
 .page {
   padding: 2rem;
   min-height: 100vh;
+}
+a {
+  color: inherit;
 }
 button {
   margin: 0 0.5rem 0.5rem 0;

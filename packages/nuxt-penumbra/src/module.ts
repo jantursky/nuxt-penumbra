@@ -1,5 +1,5 @@
 import type { NuxtModule } from '@nuxt/schema'
-import { addImports, addPlugin, createResolver, defineNuxtModule, hasNuxtModule } from '@nuxt/kit'
+import { addComponent, addImports, addPlugin, createResolver, defineNuxtModule, hasNuxtModule } from '@nuxt/kit'
 
 import { buildHeadScript, SYSTEM, supportsSystem } from './runtime/head-script'
 
@@ -72,6 +72,7 @@ const penumbra: NuxtModule<ModuleOptions, ModuleOptions, false> = defineNuxtModu
     }
 
     addPlugin(resolver.resolve('./runtime/plugin.client'))
+    addComponent({ name: 'PenumbraToggle', filePath: resolver.resolve('./runtime/components/PenumbraToggle.vue') })
     addImports([
       { name: 'usePenumbra', from: resolver.resolve('./runtime/composables/usePenumbra') },
       { name: 'definePenumbraTransition', from: resolver.resolve('./runtime/composables/usePenumbra') },
