@@ -35,7 +35,7 @@ try {
     for (const view of views) {
       const page = await context.newPage()
       await page.goto(`http://localhost:${port}${view.path}`)
-      await page.evaluate(() => document.fonts.ready)
+      await page.evaluate(() => globalThis.document.fonts.ready)
       await page.waitForTimeout(800)
       await page.screenshot({ path: join(out, `${view.name}-${scheme}.png`) })
       await page.close()
