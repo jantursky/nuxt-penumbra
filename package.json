@@ -13,7 +13,7 @@
   },
   "scripts": {
     "dev": "bun run --filter playground-color-mode dev",
-    "prepare": "bun run --filter nuxt-penumbra prepare",
+    "prepare": "bun run --filter nuxt-penumbra dev:prepare",
     "build:lib": "bun run --filter nuxt-penumbra build",
     "build:docs": "bun run build:lib && bun run --filter docs build",
     "build": "bun run build:lib && bun run --filter playground-color-mode build",

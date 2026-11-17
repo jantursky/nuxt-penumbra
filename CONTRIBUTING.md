@@ -6,7 +6,7 @@ Thanks for helping. Bug reports, docs fixes and pull requests are all welcome.
 
 - For anything bigger than a small fix, open an issue first so we can agree on the approach.
 - A transition that looks wrong in one browser may be a missing API there. Check the browser support of `document.startViewTransition` before you file a bug about the animation itself.
-- The effects live in `@penumbra/core`. This module wires them to Nuxt, so an effect that draws wrong belongs there.
+- The effects live in `penumbra-core`. This module wires them to Nuxt, so an effect that draws wrong belongs there.
 
 ## Setup
 

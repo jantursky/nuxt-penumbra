@@ -13,7 +13,7 @@ All notable changes to this project are documented here. The format follows [Kee
 - `usePenumbra()`: `theme`, `preference`, `themes`, `setTheme` and `toggleTheme`, with per-call `transition`, `duration`, `easing`, `direction` and `origin` options.
 - `<PenumbraToggle>`: a real button whose accessible name states the current and next theme, with a scoped slot, forced-colors styles and per-instance `themes`, `transition`, `duration`, `easing` and `direction`.
 - `definePenumbraTransition()` to register a custom effect.
-- 30 View Transitions effects from `@penumbra/core`, an instant fallback where `document.startViewTransition` is missing.
+- 30 View Transitions effects from `penumbra-core`, an instant fallback where `document.startViewTransition` is missing.
 - Nuxt UI support without wrappers: Nuxt UI's color mode is animated as it is.
 - A navigation guard, so a theme change made while a page transition runs does not collide with it.
 - Reduced-motion handling: with `prefers-reduced-motion: reduce` the theme changes without an effect.

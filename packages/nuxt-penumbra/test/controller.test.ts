@@ -1,10 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { runTransition } from '@penumbra/core'
+import { runTransition } from 'penumbra-core'
 
 import { createController, type ColorModeLike } from '../src/runtime/controller'
 
-vi.mock('@penumbra/core', () => ({ runTransition: vi.fn() }))
+vi.mock('penumbra-core', () => ({ runTransition: vi.fn() }))
 
 const options = { themes: ['light', 'dark', 'sepia'], transition: 'circle', duration: 500, easing: 'ease-in-out' }
 

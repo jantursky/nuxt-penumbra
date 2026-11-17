@@ -1,4 +1,4 @@
-import { runTransition, type Direction, type Origin } from '@penumbra/core'
+import { runTransition, type Direction, type Origin } from 'penumbra-core'
 
 /** The part of `@nuxtjs/color-mode`'s instance this module touches. */
 export interface ColorModeLike {

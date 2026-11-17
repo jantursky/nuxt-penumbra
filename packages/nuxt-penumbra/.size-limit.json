@@ -1,6 +1,6 @@
 [
   {
-    "name": "Client runtime (plugin, controller, @penumbra/core)",
+    "name": "Client runtime (plugin, controller, penumbra-core)",
     "path": "dist/runtime/plugin.client.js",
     "import": "*",
     "ignore": ["vue", "#imports"],

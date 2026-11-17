@@ -5,8 +5,8 @@ import { useNuxtApp, useRuntimeConfig } from '#imports'
 import type { Controller, SetThemeOptions } from '../controller'
 import { useThemeState } from '../state'
 
-export { defineTransition as definePenumbraTransition } from '@penumbra/core'
-export type { Direction, Origin, TransitionContext, TransitionDefinition } from '@penumbra/core'
+export { defineTransition as definePenumbraTransition } from 'penumbra-core'
+export type { Direction, Origin, TransitionContext, TransitionDefinition } from 'penumbra-core'
 export type { SetThemeOptions } from '../controller'
 
 export interface Penumbra {

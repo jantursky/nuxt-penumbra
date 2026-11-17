@@ -52,7 +52,7 @@ Nuxt UI's `UColorModeButton`, `UColorModeSwitch` and `UColorModeSelect` are anim
 
 ## Transitions
 
-Thirty effects ship with the module. They come from [`@penumbra/core`](https://github.com/jantursky/astro-eclipse/tree/main/packages/core), the engine that [astro-eclipse](https://github.com/jantursky/astro-eclipse) uses too, so names and options match. Register your own with `definePenumbraTransition`.
+Thirty effects ship with the module. They come from [`penumbra-core`](https://github.com/jantursky/astro-eclipse/tree/main/packages/core), the engine that [astro-eclipse](https://github.com/jantursky/astro-eclipse) uses too, so names and options match. Register your own with `definePenumbraTransition`.
 
 <table>
 <tr><th>Name</th><th>Preview</th></tr>
@@ -95,7 +95,7 @@ Thirty effects ship with the module. They come from [`@penumbra/core`](https://g
 3. A write that did not come from this module (Nuxt UI's buttons, a `v-model`) is caught by a synchronous watcher in `src/runtime/plugin.client.ts`. It puts the old value back and replays the change inside a view transition, so the old page is still on screen for the snapshot.
 4. In standalone mode `src/runtime/standalone.ts` is the store. Writing `preference` saves it, resolves `system`, and updates `<html>` synchronously. `src/runtime/head-script.ts` builds the inline script that applies the stored theme before first paint and follows the system and other tabs.
 5. A theme change that arrives while the router is navigating, or while Nuxt's own page transition runs, is applied instantly: two view transitions would cancel each other. Reduced motion and browsers without the API also get the instant switch.
-6. The animation itself runs in `@penumbra/core`: it plays the chosen effect on `::view-transition-old(root)` and `::view-transition-new(root)` with the Web Animations API, and cancels a running effect before the next one starts.
+6. The animation itself runs in `penumbra-core`: it plays the chosen effect on `::view-transition-old(root)` and `::view-transition-new(root)` with the Web Animations API, and cancels a running effect before the next one starts.
 
 ## Prior art
 

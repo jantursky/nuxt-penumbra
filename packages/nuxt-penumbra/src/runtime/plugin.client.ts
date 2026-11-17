@@ -1,4 +1,4 @@
-import { noop } from '@penumbra/core'
+import { noop } from 'penumbra-core'
 import { nextTick, watch } from 'vue'
 
 import { defineNuxtPlugin, useRouter, useRuntimeConfig } from '#imports'

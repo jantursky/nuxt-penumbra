@@ -40,7 +40,7 @@ A theme change runs inside `document.startViewTransition`. The browser snapshots
 | `cover`            | The new theme slides in over the old one.                                       |
 | `reveal`           | The old theme slides away and uncovers the new one.                             |
 
-The effects come from `@penumbra/core`, the engine shared with [astro-eclipse](/guides/using-astro). The table lists what is registered. The checks described in [browser support](/guides/browser-support) did not review the look of each effect one by one.
+The effects come from `penumbra-core`, the engine shared with [astro-eclipse](/guides/using-astro). The table lists what is registered. The checks described in [browser support](/guides/browser-support) did not review the look of each effect one by one.
 
 ## Direction
 
@@ -125,7 +125,7 @@ A second change during a running transition skips the first one cleanly, and the
 
 ## Notes
 
-Before it starts a new transition, `@penumbra/core` cancels any effect still running. Headless Chromium 159 crashed when a view transition started while the pseudo-element animation of another one was running.
+Before it starts a new transition, `penumbra-core` cancels any effect still running. Headless Chromium 159 crashed when a view transition started while the pseudo-element animation of another one was running.
 
 ## Style the transition yourself
 

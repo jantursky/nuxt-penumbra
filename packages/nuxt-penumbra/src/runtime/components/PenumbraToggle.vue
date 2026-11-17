@@ -2,7 +2,7 @@
 import { computed, onMounted, ref } from 'vue'
 
 import { usePenumbra } from '../composables/usePenumbra'
-import type { Direction } from '@penumbra/core'
+import type { Direction } from 'penumbra-core'
 
 const props = defineProps<{
   /** Themes to cycle through. Default: the module's `themes`. */

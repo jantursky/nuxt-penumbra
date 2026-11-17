@@ -3,7 +3,7 @@ title: Custom transitions
 description: Register your own effect with definePenumbraTransition, with a worked example.
 ---
 
-An effect is a name plus keyframes for the old snapshot, the new snapshot, or both. `definePenumbraTransition` registers it, and from then on the name works in `nuxt.config.ts`, in `setTheme` and on `PenumbraToggle`. It is an alias of `defineTransition` from `@penumbra/core` and is auto-imported.
+An effect is a name plus keyframes for the old snapshot, the new snapshot, or both. `definePenumbraTransition` registers it, and from then on the name works in `nuxt.config.ts`, in `setTheme` and on `PenumbraToggle`. It is an alias of `defineTransition` from `penumbra-core` and is auto-imported.
 
 ```ts
 function definePenumbraTransition(name: string, definition: TransitionDefinition): TransitionDefinition

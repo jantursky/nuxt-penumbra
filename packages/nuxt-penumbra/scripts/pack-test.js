@@ -24,7 +24,9 @@ const hasHeadScript = (html) =>
   )
 
 function packModule() {
-  const [packed] = JSON.parse(run('npm', ['pack', '--json', '--pack-destination', root], packageDir))
+  const [packed] = JSON.parse(
+    run('npm', ['pack', '--json', '--ignore-scripts', '--pack-destination', root], packageDir),
+  )
   const files = packed.files.map((file) => file.path).sort()
   const allowed = /^(dist\/.+|README\.md|CHANGELOG\.md|LICENSE|package\.json)$/
   const unexpected = files.filter((file) => !allowed.test(file))
@@ -50,7 +52,7 @@ function buildProject({ nuxt, variant, tarball }) {
       '--no-fund',
       '--loglevel=error',
       tarball,
-      '@penumbra/core@^1.0.0',
+      'penumbra-core@^1.0.0',
       `nuxt@${nuxt}`,
       ...(variant.colorMode ? ['@nuxtjs/color-mode@latest'] : []),
     ],
