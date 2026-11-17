@@ -35,6 +35,9 @@ const penumbra: NuxtModule<ModuleOptions, ModuleOptions, false> = defineNuxtModu
     configKey: 'penumbra',
     compatibility: { nuxt: '>=3.12.0' },
   },
+  // Sets up after color-mode when another module (Nuxt UI) installs it, so `hasNuxtModule` sees it. Optional: the
+  // module also works without it.
+  moduleDependencies: { '@nuxtjs/color-mode': { optional: true } },
   defaults: {
     transition: 'circle',
     duration: 500,
@@ -44,39 +47,42 @@ const penumbra: NuxtModule<ModuleOptions, ModuleOptions, false> = defineNuxtModu
     storageKey: 'penumbra-theme',
   },
   setup(options, nuxt) {
-    const mode = options.mode ?? (hasNuxtModule('@nuxtjs/color-mode', nuxt) ? 'color-mode' : 'standalone')
-    // `themes` has no entry in `defaults`: Nuxt merges arrays with `defu`, which would append the user's list to ours.
-    const resolved: ResolvedOptions = {
-      ...(options as ResolvedOptions),
-      themes: options.themes ?? ['light', 'dark'],
-      mode,
-    }
-    validate(resolved)
-
-    if (mode === 'color-mode' && !hasNuxtModule('@nuxtjs/color-mode', nuxt)) {
-      throw new Error('nuxt-penumbra: mode "color-mode" needs `@nuxtjs/color-mode` in `modules`.')
-    }
-
     const resolver = createResolver(import.meta.url)
-    nuxt.options.build.transpile.push(resolver.resolve('./runtime'))
-    nuxt.options.runtimeConfig.public.penumbra = resolved
+    // Wait for every module: Nuxt UI installs `@nuxtjs/color-mode` as a dependency of its own, after ours has been set up.
+    nuxt.hook('modules:done', () => {
+      const mode = options.mode ?? (hasNuxtModule('@nuxtjs/color-mode', nuxt) ? 'color-mode' : 'standalone')
+      // `themes` has no entry in `defaults`: Nuxt merges arrays with `defu`, which would append the user's list to ours.
+      const resolved: ResolvedOptions = {
+        ...(options as ResolvedOptions),
+        themes: options.themes ?? ['light', 'dark'],
+        mode,
+      }
+      validate(resolved)
 
-    // Standalone mode has no color-mode script to prevent a flash, so it brings its own, first in <head>.
-    if (mode === 'standalone') {
-      nuxt.options.app.head.script ||= []
-      nuxt.options.app.head.script.push({
-        innerHTML: buildHeadScript(resolved),
-        tagPosition: 'head',
-        tagPriority: 'critical',
-      })
-    }
+      if (mode === 'color-mode' && !hasNuxtModule('@nuxtjs/color-mode', nuxt)) {
+        throw new Error('nuxt-penumbra: mode "color-mode" needs `@nuxtjs/color-mode` in `modules`.')
+      }
 
-    addPlugin(resolver.resolve('./runtime/plugin.client'))
-    addComponent({ name: 'PenumbraToggle', filePath: resolver.resolve('./runtime/components/PenumbraToggle.vue') })
-    addImports([
-      { name: 'usePenumbra', from: resolver.resolve('./runtime/composables/usePenumbra') },
-      { name: 'definePenumbraTransition', from: resolver.resolve('./runtime/composables/usePenumbra') },
-    ])
+      nuxt.options.build.transpile.push(resolver.resolve('./runtime'))
+      nuxt.options.runtimeConfig.public.penumbra = resolved
+
+      // Standalone mode has no color-mode script to prevent a flash, so it brings its own, first in <head>.
+      if (mode === 'standalone') {
+        nuxt.options.app.head.script ||= []
+        nuxt.options.app.head.script.push({
+          innerHTML: buildHeadScript(resolved),
+          tagPosition: 'head',
+          tagPriority: 'critical',
+        })
+      }
+
+      addPlugin(resolver.resolve('./runtime/plugin.client'))
+      addComponent({ name: 'PenumbraToggle', filePath: resolver.resolve('./runtime/components/PenumbraToggle.vue') })
+      addImports([
+        { name: 'usePenumbra', from: resolver.resolve('./runtime/composables/usePenumbra') },
+        { name: 'definePenumbraTransition', from: resolver.resolve('./runtime/composables/usePenumbra') },
+      ])
+    })
   },
 })
 
