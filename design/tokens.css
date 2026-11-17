@@ -1,0 +1,58 @@
+/* One source of colors, type and spacing for the demo and the docs. No surface uses an ad-hoc value. */
+:root {
+  --canvas: #f5f5f5;
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --text: #000000;
+  --text-muted: #6b6b6b;
+  --text-subtle: #808080;
+  --border: #b8b8b8;
+  --accent: #ffd500;
+  --on-accent: #000000;
+  --nav: #1f1f1f;
+  --on-nav: #ffffff;
+  --shadow: rgba(0, 0, 0, 0.12) -2px 3px 3px 0;
+  --focus: #000000;
+
+  /* Logo. Colors come from the Nuxt ecosystem; the dark track lifts off a dark canvas. */
+  --logo-green: #00dc82;
+  --logo-shade: #00a86b;
+  --logo-sun: #ffd500;
+  --logo-track: #101014;
+
+  --font-display: 'Reddit Sans Condensed', 'Bebas Neue', Anton, Oswald, sans-serif;
+  --font-body: 'Inter Variable', Inter, system-ui, sans-serif;
+  --font-hand: Caveat, 'Patrick Hand', cursive;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
+
+  --radius-card: 14px;
+  --radius-button: 32px;
+  --radius-nav: 110px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --page-width: 1200px;
+}
+
+:root[data-theme='dark'],
+:root.dark {
+  --canvas: #0b0b0c;
+  --surface: #141416;
+  --surface-raised: #1c1c1f;
+  --text: #ffffff;
+  --text-muted: #a6a6a6;
+  --text-subtle: #8a8a8a;
+  --border: #2e2e32;
+  --shadow: none;
+  --focus: #ffd500;
+  --nav: #26262b;
+  --logo-track: #2a2a30;
+}
