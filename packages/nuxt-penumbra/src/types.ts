@@ -7,11 +7,3 @@ declare module '@nuxt/schema' {
 }
 
 export type { ModuleOptions } from './module'
-export type {
-  Penumbra,
-  SetThemeOptions,
-  Direction,
-  Origin,
-  TransitionContext,
-  TransitionDefinition,
-} from './runtime/composables/usePenumbra'

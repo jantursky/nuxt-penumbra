@@ -137,13 +137,22 @@ Details:
 
 ## Types
 
-The package entry exports the option types:
+The package entry exports the option and API types:
 
 ```ts
-import type { ModuleOptions, ResolvedOptions } from 'nuxt-penumbra'
+import type {
+  Direction,
+  ModuleOptions,
+  Origin,
+  Penumbra,
+  ResolvedOptions,
+  SetThemeOptions,
+  TransitionContext,
+  TransitionDefinition,
+} from 'nuxt-penumbra'
 ```
 
-`ResolvedOptions` is `Required<ModuleOptions>`, the shape of `runtimeConfig.public.penumbra`. The types in this page for `Penumbra`, `SetThemeOptions`, `Origin`, `Direction` and `TransitionDefinition` are not exported from the package entry.
+`ResolvedOptions` is `Required<ModuleOptions>`, the shape of `runtimeConfig.public.penumbra`.
 
 ## The $penumbra plugin
 

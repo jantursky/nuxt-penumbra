@@ -27,6 +27,15 @@ export interface ModuleOptions {
 
 export type ResolvedOptions = Required<ModuleOptions>
 
+export type {
+  Direction,
+  Origin,
+  Penumbra,
+  SetThemeOptions,
+  TransitionContext,
+  TransitionDefinition,
+} from './runtime/composables/usePenumbra'
+
 const NAME = /^[a-z][a-z0-9-]*$/i
 
 const penumbra: NuxtModule<ModuleOptions, ModuleOptions> = defineNuxtModule<ModuleOptions>({
