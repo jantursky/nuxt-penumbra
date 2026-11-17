@@ -1,0 +1,92 @@
+---
+title: Custom transitions
+description: Register your own effect with definePenumbraTransition, with a worked example.
+---
+
+An effect is a name plus keyframes for the old snapshot, the new snapshot, or both. `definePenumbraTransition` registers it, and from then on the name works in `nuxt.config.ts`, in `setTheme` and on `PenumbraToggle`. It is an alias of `defineTransition` from `@penumbra/core` and is auto-imported.
+
+```ts
+function definePenumbraTransition(name: string, definition: TransitionDefinition): TransitionDefinition
+
+interface TransitionDefinition {
+  old?: (context: TransitionContext) => Keyframe[]
+  new?: (context: TransitionContext) => Keyframe[]
+  top?: 'old' | 'new' // which snapshot is drawn above the other, default 'new'
+}
+
+interface TransitionContext {
+  origin: { x: number; y: number } // viewport pixels
+  direction: 'up' | 'down' | 'left' | 'right' // default 'right'
+  width: number // viewport width
+  height: number // viewport height
+}
+```
+
+`old` animates `::view-transition-old(root)` and `new` animates `::view-transition-new(root)`. Return normal `Keyframe[]`, the same array you would give `element.animate()`. The module applies the duration and easing, so leave them out of the keyframes.
+
+## Example: a rectangle that grows from the origin
+
+The new theme appears in a rectangle that starts as a point at the origin and grows to the full viewport. `clip-path: inset(top right bottom left)` does that: each value cuts that many pixels from one edge.
+
+```ts plugins/penumbra-effects.client.ts
+export default defineNuxtPlugin(() => {
+  definePenumbraTransition('grow', {
+    new: ({ origin, width, height }) => [
+      {
+        clipPath: `inset(${origin.y}px ${width - origin.x}px ${height - origin.y}px ${origin.x}px)`,
+      },
+      { clipPath: 'inset(0px 0px 0px 0px)' },
+    ],
+  })
+})
+```
+
+A plugin with the `.client.ts` suffix runs once in the browser at startup, before any toggle is clicked. Then use the name:
+
+```vue
+<PenumbraToggle transition="grow" />
+```
+
+```ts
+setTheme('dark', { transition: 'grow', origin: event })
+```
+
+To make it the default, set `transition: 'grow'` in the module options. The module does not check the name at build time, so a typo falls back to an instant switch.
+
+## Example: reveal from the top
+
+An effect does not have to use the origin:
+
+```ts
+definePenumbraTransition('curtain-down', {
+  new: () => [{ clipPath: 'inset(0 0 100% 0)' }, { clipPath: 'inset(0 0 0 0)' }],
+})
+```
+
+Pick a name that is not already built in, since registering an existing name replaces it.
+
+## Which snapshot goes on top
+
+By default the new snapshot is drawn above the old one, so an effect on `new` reveals it. To reveal the new theme by removing the old one, put the old snapshot on top and animate it away. `circle-inverse` works this way:
+
+```ts
+definePenumbraTransition('shrink', {
+  top: 'old',
+  old: ({ origin, width, height }) => [
+    { clipPath: `circle(${Math.hypot(width, height)}px at ${origin.x}px ${origin.y}px)` },
+    { clipPath: `circle(0px at ${origin.x}px ${origin.y}px)` },
+  ],
+})
+```
+
+`Math.hypot(width, height)` is a radius that covers the viewport from any point inside it.
+
+## Rules
+
+- Register it in code that runs in the browser before the first change. A `.client.ts` plugin does that.
+- Registering an existing name replaces it, built-in names included.
+- Keyframes run only when the transition runs. In the [cases where the theme switches instantly](/guides/transitions#when-it-switches-instantly) your function is not called.
+- Keep keyframes to properties the browser can animate on the root snapshot, such as `clip-path`, `opacity` and `transform`. Other properties have not been checked.
+- The types are not exported from the package entry. Copy the shapes above if you need to annotate your own code. The auto-imported function is typed.
+
+Related: [API reference](/reference/api), [transitions](/guides/transitions).

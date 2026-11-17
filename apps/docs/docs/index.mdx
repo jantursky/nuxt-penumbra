@@ -1,0 +1,72 @@
+---
+title: Introduction
+description: Animated theme switching for Nuxt, built on View Transitions.
+---
+
+nuxt-penumbra is a Nuxt module that animates theme switches with the View Transitions API: a circle that grows from the button you clicked, a fade, a wipe, or an effect you write yourself. It adds the animation to the theme handling you already have. With `@nuxtjs/color-mode` it only animates changes to `preference`. Without it, the module keeps a small theme store of its own.
+
+The current version is {{version}}. See the [changelog](/changelog) for what each release changed.
+
+The animation is the whole job. Your CSS decides what each theme looks like, and the theme is applied before first paint, so a reload shows no flash. Where the browser has no View Transitions API, or the visitor prefers reduced motion, the theme switches instantly.
+
+## Quick start
+
+```bash
+npm install nuxt-penumbra @nuxtjs/color-mode
+```
+
+```ts nuxt.config.ts
+export default defineNuxtConfig({
+  modules: ['@nuxtjs/color-mode', 'nuxt-penumbra'],
+  colorMode: { classSuffix: '' },
+})
+```
+
+```css assets/css/main.css
+:root {
+  color-scheme: light;
+  --bg: #fff;
+  --fg: #111;
+}
+
+:root.dark {
+  color-scheme: dark;
+  --bg: #000;
+  --fg: #eee;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+}
+```
+
+```vue app.vue
+<template>
+  <PenumbraToggle />
+  <NuxtPage />
+</template>
+```
+
+Add the stylesheet to `css` in `nuxt.config.ts`. The circle opens from the click.
+
+## Where to go next
+
+<CardGroup cols={2}>
+  <Card title="Getting started" href="/getting-started" icon="rocket">
+    Install, configure and add the first toggle.
+  </Card>
+  <Card title="Nuxt UI" href="/guides/nuxt-ui" icon="puzzle">
+    Animate UColorModeButton and friends with no wrapper.
+  </Card>
+  <Card title="Transitions" href="/guides/transitions" icon="play">
+    Every built-in effect, with origin, duration and easing.
+  </Card>
+  <Card title="API reference" href="/reference/api" icon="book-open">
+    usePenumbra, PenumbraToggle and every module option.
+  </Card>
+</CardGroup>
+
+## What it does not do
+
+It does not ship a palette. It does not replace `@nuxtjs/color-mode`. It does not animate page navigation. [Not covered yet](/guides/not-covered-yet) lists what has not been tested, and [prior art](/guides/prior-art) compares it with the alternatives.

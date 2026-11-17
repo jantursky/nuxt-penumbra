@@ -1,0 +1,63 @@
+name: Bug report
+description: A theme doesn't switch, flashes, throws, or doesn't match the docs.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. Please check the [docs](https://nuxt-penumbra-docs.vercel.app) first, and keep the reproduction as small as you can.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you expected, and what you got instead. Include the error message or the console output if there is one.
+    validations:
+      required: true
+  - type: input
+    id: repro
+    attributes:
+      label: Reproduction
+      description: A link to a minimal project, such as a StackBlitz or a repository.
+      placeholder: https://
+    validations:
+      required: true
+  - type: textarea
+    id: config
+    attributes:
+      label: penumbra config
+      description: The `penumbra` options in `nuxt.config.ts`, or "default" if you set none.
+      render: ts
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Mode
+      options:
+        - '@nuxtjs/color-mode'
+        - Standalone
+        - Nuxt UI
+        - Not sure
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: nuxt-penumbra version
+      placeholder: 1.0.0
+    validations:
+      required: true
+  - type: input
+    id: nuxt
+    attributes:
+      label: Nuxt version
+      placeholder: 4.6.4
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and version
+      placeholder: Chrome 140, Firefox 144, Safari 18.4
+    validations:
+      required: true

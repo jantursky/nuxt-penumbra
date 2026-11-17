@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
 
 test.beforeEach(async ({ page, browserName }) => {
   test.skip(browserName === 'firefox', 'No View Transitions API in this Firefox build')
@@ -18,7 +18,7 @@ test.beforeEach(async ({ page, browserName }) => {
   })
 })
 
-const state = (page: import('@playwright/test').Page) =>
+const state = (page: Page) =>
   page.evaluate(() => {
     const w = window as unknown as { __vt: number; __oldClass: string[] }
     return { count: w.__vt, oldClass: w.__oldClass }

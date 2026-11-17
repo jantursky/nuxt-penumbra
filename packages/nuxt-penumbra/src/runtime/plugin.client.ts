@@ -1,3 +1,4 @@
+import { noop } from '@penumbra/core'
 import { nextTick, watch } from 'vue'
 
 import { defineNuxtPlugin, useRouter, useRuntimeConfig } from '#imports'
@@ -29,11 +30,9 @@ export default defineNuxtPlugin((nuxtApp) => {
     'page:view-transition:start' as never,
     ((transition: ViewTransition) => {
       pageTransition = transition
-      void transition.finished
-        .catch(() => {})
-        .then(() => {
-          if (pageTransition === transition) pageTransition = undefined
-        })
+      void transition.finished.catch(noop).then(() => {
+        if (pageTransition === transition) pageTransition = undefined
+      })
     }) as never,
   )
 

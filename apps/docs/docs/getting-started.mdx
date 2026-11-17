@@ -1,0 +1,108 @@
+---
+title: Getting started
+description: Install nuxt-penumbra next to @nuxtjs/color-mode, write the theme CSS and switch themes from a button.
+sidebar:
+  order: 2
+---
+
+This page uses `@nuxtjs/color-mode`, which is the usual choice. Without it, see [standalone mode](/guides/standalone). With Nuxt UI, see [Nuxt UI](/guides/nuxt-ui).
+
+## Install
+
+```package-install
+nuxt-penumbra @nuxtjs/color-mode
+```
+
+The module was written against Nuxt 4. Its `nuxt` compatibility field is `>=3.12.0`, but Nuxt 3 has not been run. See [browser support and compatibility](/guides/browser-support#compatibility).
+
+`@nuxtjs/color-mode` is an optional peer dependency (`^3.0.0 || ^4.0.0`). Install it when you want color-mode mode.
+
+## Add the modules
+
+```ts nuxt.config.ts
+export default defineNuxtConfig({
+  modules: ['@nuxtjs/color-mode', 'nuxt-penumbra'],
+  colorMode: { classSuffix: '' },
+  penumbra: { transition: 'circle', duration: 500 },
+})
+```
+
+With `@nuxtjs/color-mode` present, the module runs in `color-mode` mode. It never stores a theme itself. Color-mode keeps storing the preference in its cookie or `localStorage`, and nuxt-penumbra animates the changes to `useColorMode().preference`.
+
+`classSuffix: ''` makes color-mode add `dark` instead of `dark-mode` to `<html>`. That is a color-mode option, not a nuxt-penumbra one, and the CSS below assumes it. Every `penumbra` option is listed in the [API reference](/reference/api#module-options).
+
+The module sets itself up after all other modules (`modules:done`), so the order of the `modules` array does not matter.
+
+## Write the theme CSS
+
+nuxt-penumbra ships no palette. Color-mode puts a class on `<html>`, and you select on it:
+
+```css assets/css/main.css
+:root {
+  color-scheme: light;
+  --bg: #fff;
+  --fg: #111;
+}
+
+:root.dark {
+  color-scheme: dark;
+  --bg: #000;
+  --fg: #eee;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+}
+```
+
+```ts nuxt.config.ts
+export default defineNuxtConfig({
+  css: ['~/assets/css/main.css'],
+})
+```
+
+Color-mode's inline head script sets the class before first paint, which is why a reload does not flash. See [SSR and storage](/guides/ssr-and-storage).
+
+## Switch the theme
+
+`PenumbraToggle` is a button that cycles through `themes`. It passes the click as the origin, so the reveal starts where the visitor clicked.
+
+```vue app.vue
+<template>
+  <PenumbraToggle />
+</template>
+```
+
+To build your own button, use the composable:
+
+```vue components/ThemeButton.vue
+<script setup lang="ts">
+const { theme, toggleTheme } = usePenumbra()
+
+function onClick(event: MouseEvent) {
+  toggleTheme({ origin: event })
+}
+</script>
+
+<template>
+  <button type="button" @click="onClick">Theme: {{ theme }}</button>
+</template>
+```
+
+To pick a theme by name, or to go back to following the system, call `setTheme`:
+
+```ts
+const { setTheme } = usePenumbra()
+
+setTheme('dark', { transition: 'wipe', direction: 'down' })
+setTheme('system') // needs the themes "light" and "dark"
+```
+
+Writing `useColorMode().preference` directly also animates. That is how Nuxt UI's color mode components work, and it is covered in [Nuxt UI](/guides/nuxt-ui).
+
+## Next
+
+- [Transitions](/guides/transitions): the built-in effects and how to tune them.
+- [Accessibility](/guides/accessibility): what the button announces.
+- [API reference](/reference/api): `usePenumbra`, `PenumbraToggle` and the module options.

@@ -1,0 +1,44 @@
+---
+title: Prior art
+description: What already exists for theme switching and for view transitions in Nuxt, and where nuxt-penumbra fits.
+---
+
+nuxt-penumbra does not replace any of these. In most cases it sits on top of one.
+
+## @nuxtjs/color-mode
+
+[`@nuxtjs/color-mode`](https://color-mode.nuxtjs.org) is the standard way to handle dark and light mode in Nuxt: it stores the preference, resolves `system`, and sets a class on `<html>` before first paint. It has no animation. nuxt-penumbra uses it as the store and adds the transition on top, without storing anything itself.
+
+## Nuxt UI color mode components
+
+[`UColorModeButton`, `UColorModeSwitch` and `UColorModeSelect`](https://ui.nuxt.com/docs/components/color-mode-button) change the theme through color-mode. They switch instantly. nuxt-penumbra animates their writes with no wrapper. See [Nuxt UI](/guides/nuxt-ui).
+
+## Nuxt's experimental viewTransition
+
+Nuxt has an [`experimental.viewTransition`](https://nuxt.com/docs/4.x/api/nuxt-config#viewtransition) option that runs page navigations inside a view transition. It is about routes, not themes. The two can be on together: nuxt-penumbra skips its own transition while a navigation runs, so they do not cancel each other.
+
+## css-theme-transition
+
+[`css-theme-transition`](https://css-theme-transition.vercel.app/) is a package for theme-switch animations on View Transitions, aimed at React and Next.js. It has no Nuxt integration or color-mode awareness.
+
+## @space-man/react-theme-animation
+
+[`@space-man/react-theme-animation`](https://github.com/tonyedgal/spaceman-react-theme-animation) does theme switching with view transition animations and multiple themes, for React. The idea is the same as here; the framework is different.
+
+## Hand-written CSS
+
+You can write the effect yourself. The usual recipe is `document.startViewTransition(() => toggle())` plus CSS on `::view-transition-old(root)` and `::view-transition-new(root)`:
+
+```css
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+```
+
+It works, and for one effect it may be all you need. What nuxt-penumbra adds is the origin handling, the effect library, the guards (reduced motion, no API, navigation, a second toggle during a transition), the replay of writes that come from Nuxt UI's components, and the no-flash head script in standalone mode. If you need only a fade, the hand-written version is a few lines.
+
+## astro-eclipse
+
+The Astro integration by the same author runs the same engine. See [using Astro](/guides/using-astro).

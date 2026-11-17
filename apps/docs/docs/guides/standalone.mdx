@@ -1,0 +1,95 @@
+---
+title: Standalone mode
+description: Use nuxt-penumbra without @nuxtjs/color-mode, with its own store, localStorage persistence and a no-flash head script.
+---
+
+Standalone mode is for sites that do not use `@nuxtjs/color-mode`. The module keeps its own small theme store, saves the visitor's choice in `localStorage`, follows `prefers-color-scheme`, and injects a script into `<head>` that applies the theme before first paint.
+
+It is the default when `@nuxtjs/color-mode` is not in `modules`. You can also force it with `mode: 'standalone'`.
+
+```ts nuxt.config.ts
+export default defineNuxtConfig({
+  modules: ['nuxt-penumbra'],
+  penumbra: {
+    themes: ['light', 'dark', 'sepia'],
+    default: 'system',
+    attribute: 'data-theme',
+    storageKey: 'penumbra-theme',
+  },
+})
+```
+
+## What the store does
+
+- The visitor's choice (a theme name or `'system'`) is saved in `localStorage` under `storageKey`. If storage is blocked or full, the choice still applies to the current page.
+- `'system'` follows `prefers-color-scheme` and updates live when the system setting changes. It needs the themes `light` and `dark` in `themes`.
+- A change in another tab is picked up through the `storage` event, so open tabs stay in step.
+- The store starts after hydration (`app:mounted`), so the stored choice does not clash with the server-rendered markup.
+
+## The head script
+
+The module adds an inline script to `<head>` with the highest priority, so it runs before the stylesheet is applied and before first paint. It reads the same storage key, resolves `'system'`, and sets the attribute or class on `<html>`. It also listens for system and cross-tab changes, so the page stays correct before Vue has hydrated.
+
+The script is built from your options and contains the theme names, `default`, `attribute` and `storageKey`. If your site uses a strict Content-Security-Policy, an inline script needs a hash or a nonce. That has not been tested here.
+
+## Options
+
+| Option       | Default            | What it does                                                                          |
+| ------------ | ------------------ | ------------------------------------------------------------------------------------- |
+| `default`    | `'system'`         | The theme before the visitor picks one. A theme name, or `'system'`.                  |
+| `attribute`  | `'data-theme'`     | What the module sets on `<html>`: `'class'` toggles a class, `'data-*'` sets a value. |
+| `storageKey` | `'penumbra-theme'` | The `localStorage` key that holds the choice.                                         |
+
+`themes`, `transition`, `duration` and `easing` apply in both modes. The module throws at build time for a `default` that is not in `themes`, for `default: 'system'` without `light` and `dark`, and for an empty `storageKey`.
+
+## Write the CSS
+
+With the default attribute, select on `data-theme`:
+
+```css assets/css/main.css
+:root {
+  color-scheme: light;
+  --bg: #fff;
+  --fg: #111;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #000;
+  --fg: #eee;
+}
+
+:root[data-theme='sepia'] {
+  color-scheme: light;
+  --bg: #f4ecd8;
+  --fg: #3b2f1e;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+}
+```
+
+With `attribute: 'class'` the module toggles a class named after the theme and removes the others, so select on `:root.dark` instead.
+
+## Use it
+
+```vue app.vue
+<template>
+  <PenumbraToggle />
+</template>
+```
+
+```ts
+const { theme, preference, setTheme } = usePenumbra()
+
+setTheme('sepia')
+setTheme('system')
+```
+
+`theme` is the theme on screen and is never `'system'`. `preference` is what the visitor chose and can be `'system'`.
+
+## Server rendering
+
+On the server the store holds the `default`. When `default` is `'system'`, the server renders the `light` theme state. The head script then fixes the page before paint, and the store adopts the real value after hydration. Text that depends on the theme can therefore differ between server and client; `PenumbraToggle` waits for mount before it shows its live label. See [SSR and storage](/guides/ssr-and-storage).

@@ -1,0 +1,6 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nuxt",
+  "installCommand": "bun install --frozen-lockfile",
+  "buildCommand": "bun run build:lib && bun run --filter demo build && rm -rf .vercel/output && mkdir -p .vercel && cp -r apps/demo/.vercel/output .vercel/output"
+}

@@ -1,0 +1,134 @@
+---
+title: Transitions
+description: The built-in effects, and how to set the origin, direction, duration and easing, with the cases where the theme switches instantly.
+---
+
+A theme change runs inside `document.startViewTransition`. The browser snapshots the page before and after, and nuxt-penumbra animates the two snapshots with the Web Animations API. The theme changes at the start; the animation only decides how the new one is revealed.
+
+## Built-in effects
+
+| Name               | What it does                                                                    |
+| ------------------ | ------------------------------------------------------------------------------- |
+| `circle` (default) | The new theme grows as a circle from the origin until it covers the screen.     |
+| `circle-inverse`   | The old theme shrinks to the origin as a circle and uncovers the new one below. |
+| `fade`             | The old theme fades out while the new one fades in. The origin is ignored.      |
+| `wipe`             | A straight edge sweeps across the screen in the chosen `direction`. No origin.  |
+| `diamond`          | The new theme grows as a diamond from the origin.                               |
+| `iris`             | The new theme opens as a hexagon from the origin, like a camera iris.           |
+| `blinds`           | Eight slats open side by side, growing in the chosen `direction`. No origin.    |
+| `blur-circle`      | Like `circle`, and the new theme sharpens from a blur while it opens.           |
+| `star`             | The new theme grows as a five-pointed star from the origin.                     |
+| `diagonal`         | A slanted edge sweeps across the screen in the chosen `direction`. No origin.   |
+| `diagonal-soft`    | A diagonal sweep with a feathered edge, in the chosen `direction`. No origin.   |
+| `split`            | The new theme opens from the middle outward. `direction` sets the axis.         |
+| `scan`             | Forty thin slats reveal the new theme like a scan line. No origin.              |
+| `slide`            | The new theme pushes the old one off the screen in the chosen `direction`.      |
+| `zoom`             | The old theme shrinks away as the new one settles in from slightly larger.      |
+| `square`           | The new theme grows as a square from the origin.                                |
+| `triangle`         | The new theme grows as a triangle from the origin.                              |
+| `sunburst`         | The new theme bursts out as a twelve-point sun.                                 |
+| `cross`            | The new theme grows as a plus sign.                                             |
+| `heart`            | The new theme grows as a heart.                                                 |
+| `ripple`           | Rings spread from the origin and merge into the new theme.                      |
+| `clock`            | A radial sweep, one clockwise turn around the origin.                           |
+| `curtain`          | Two shutters close in from opposite edges.                                      |
+| `stairs`           | Ten columns or rows grow one after the other.                                   |
+| `mosaic`           | A grid of squares opens in a scattered order.                                   |
+| `blur`             | Both themes blur while they cross-fade.                                         |
+| `flip`             | The page turns like a card around the axis of `direction`.                      |
+| `spin`             | The new theme spins and grows in from nothing.                                  |
+| `cover`            | The new theme slides in over the old one.                                       |
+| `reveal`           | The old theme slides away and uncovers the new one.                             |
+
+The effects come from `@penumbra/core`, the engine shared with [astro-eclipse](/guides/using-astro). The table lists what is registered. The checks described in [browser support](/guides/browser-support) did not review the look of each effect one by one.
+
+## Direction
+
+`direction` is `'right'` (the default), `'left'`, `'down'` or `'up'`. It sets where `wipe`, `diagonal`, `diagonal-soft`, `scan`, `slide`, `stairs`, `cover` and `reveal` travel, which way `flip` turns, and which way the `blinds` slats grow: `'left'` and `'right'` give vertical slats, `'up'` and `'down'` give horizontal ones. For `split` and `curtain`, `'left'` and `'right'` open from a vertical center line, `'up'` and `'down'` from a horizontal one.
+
+```ts
+const { setTheme } = usePenumbra()
+
+setTheme('dark', { transition: 'wipe', direction: 'down' })
+```
+
+On the component, pass it as a prop:
+
+```vue
+<PenumbraToggle transition="wipe" direction="down" />
+```
+
+## Choose an effect
+
+Set the default for the whole site in `nuxt.config.ts`:
+
+```ts nuxt.config.ts
+export default defineNuxtConfig({
+  penumbra: { transition: 'circle-inverse' },
+})
+```
+
+Or choose per call, or per `PenumbraToggle`:
+
+```ts
+setTheme('dark', { transition: 'fade' })
+```
+
+The module does not check the name. An unregistered name switches the theme instantly and does not throw.
+
+## Origin
+
+The origin is where a reveal starts. `setTheme` and `toggleTheme` accept an `Origin`, which is a `MouseEvent`, an `Element`, a point in viewport pixels, or `'center'`.
+
+```ts
+const { setTheme, toggleTheme } = usePenumbra()
+
+button.addEventListener('click', (event) => toggleTheme({ origin: event })) // click position
+setTheme('dark', { origin: button }) // center of an element
+setTheme('dark', { origin: { x: 120, y: 40 } }) // viewport pixels
+setTheme('dark', { origin: 'center' }) // middle of the screen
+```
+
+If you do not pass an origin, the module uses the last click, provided it happened less than a second before the call. Otherwise it uses the middle of the screen. That is what lets a foreign write, such as `UColorModeButton`, reveal from the button.
+
+A click made with the keyboard (Enter or Space on a button) has no pointer position. The reveal starts from the center of the button in that case.
+
+## Duration and easing
+
+`duration` is in milliseconds. It defaults to the module's `duration`, which defaults to 500. `easing` is any CSS easing string and defaults to `ease-in-out`.
+
+```ts
+setTheme('dark', { duration: 800, easing: 'cubic-bezier(0.2, 0, 0, 1)' })
+```
+
+Both options also exist in `nuxt.config.ts` and as props on `PenumbraToggle`.
+
+## When it switches instantly
+
+The theme always changes. The animation is skipped, and the change applies at once, when any of these is true:
+
+- `document.startViewTransition` does not exist in the browser. See [browser support](/guides/browser-support).
+- The visitor has `prefers-reduced-motion: reduce` set. It is read when the theme is changed, not watched live.
+- `duration` is 0.
+- The effect name is not registered.
+- A page navigation is running. The router flag and Nuxt's `page:view-transition:start` hook both count. See below.
+- The resolved theme did not change, for example switching to `system` while the system already matches the shown theme.
+- The theme is forced by color-mode (`forced`).
+
+## Navigation
+
+A theme transition never runs during a page navigation. A second view transition would cancel Nuxt's own page transition and leave the navigation half done, so the theme change applies instantly instead. This was checked in Chromium and WebKit with `experimental.viewTransition` on.
+
+## Calling it again while one is running
+
+A second change during a running transition skips the first one cleanly, and the page ends on the latest theme. There is no function that cancels a transition without starting another one.
+
+## Notes
+
+Before it starts a new transition, `@penumbra/core` cancels any effect still running. Headless Chromium 159 crashed when a view transition started while the pseudo-element animation of another one was running.
+
+## Style the transition yourself
+
+For the length of each transition, the module switches off the browser's default cross-fade on `::view-transition-old(root)` and `::view-transition-new(root)`, and removes that style afterwards. It also turns off CSS transitions and animations on the page for the frame of the change, so elements with their own `transition` do not lag behind the new theme. Do not add your own animations to those pseudo-elements for the root, or they will fight the effect.
+
+To make your own effect, see [custom transitions](/guides/custom-transitions).

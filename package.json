@@ -15,6 +15,7 @@
     "dev": "bun run --filter playground-color-mode dev",
     "prepare": "bun run --filter nuxt-penumbra prepare",
     "build:lib": "bun run --filter nuxt-penumbra build",
+    "build:docs": "bun run build:lib && bun run --filter docs build",
     "build": "bun run build:lib && bun run --filter playground-color-mode build",
     "test": "bun run --filter nuxt-penumbra test",
     "test:coverage": "bun run --filter nuxt-penumbra test:coverage",
@@ -23,7 +24,11 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "check": "bun run format:check && bun run typecheck && bun run lint && bun run test:coverage"
+    "check": "bun run format:check && bun run typecheck && bun run lint && bun run test:coverage",
+    "lint:package": "bun run --filter nuxt-penumbra lint:package",
+    "test:pack": "bun run --filter nuxt-penumbra test:pack",
+    "size": "bun run --filter nuxt-penumbra size",
+    "test:e2e": "bun run --filter playground-color-mode test:e2e && bun run --filter playground-standalone test:e2e && bun run --filter playground-nuxt-ui test:e2e && bun run --filter demo test:e2e"
   },
   "devDependencies": {
     "@eslint/js": "^10",

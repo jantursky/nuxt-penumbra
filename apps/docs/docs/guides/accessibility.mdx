@@ -1,0 +1,75 @@
+---
+title: Accessibility
+description: The accessible name of the toggle, keyboard use, forced colors, announcements and reduced motion.
+---
+
+nuxt-penumbra changes a class or attribute and runs an animation. The rest of the accessibility work is in the markup and CSS you write. This is what the module itself does.
+
+## The button
+
+`PenumbraToggle` renders a native `<button type="button">`. Its accessible name states both the current theme and the next one:
+
+```text
+Theme: light. Switch to dark.
+```
+
+The name updates after each change. Before the page has mounted, the name is the neutral `Switch theme`, because the server may not know the theme. The button has no `aria-pressed`, so a screen reader reads the name once and does not repeat the state.
+
+If you replace the content through the default slot, the name stays. The slot only fills the visible content.
+
+```vue
+<PenumbraToggle v-slot="{ theme, next, ready }">
+  <span aria-hidden="true">{{ ready ? theme : '' }}</span>
+</PenumbraToggle>
+```
+
+## Keyboard
+
+A native button works with Enter and Space. A keyboard click has no pointer position, so the reveal starts from the center of the button.
+
+## Forced colors
+
+In forced colors mode, a button without a border can be hard to see. `PenumbraToggle` adds `border: 1px solid ButtonText` when `forced-colors: active` matches. This is the only style it sets.
+
+## Announcements
+
+The module announces nothing. The change is visible, and the button's name tells a screen reader user the current state when they focus it. If you want a spoken confirmation, add a polite live region and write to it after the change:
+
+```vue
+<script setup lang="ts">
+const { theme } = usePenumbra()
+const status = ref('')
+watch(theme, (value) => {
+  status.value = `Theme changed to ${value}`
+})
+</script>
+
+<template>
+  <div role="status" class="visually-hidden">{{ status }}</div>
+</template>
+```
+
+```css
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+```
+
+Whether an announcement helps depends on your users. The module does not add one.
+
+## Reduced motion
+
+With `prefers-reduced-motion: reduce`, the theme switches instantly, with no animation. The setting is read when the theme changes, not watched live.
+
+## Contrast
+
+Each theme's contrast is up to your CSS. The module does not check it.
+
+## Not tested
+
+The behavior of specific screen readers has not been tested.

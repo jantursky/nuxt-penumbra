@@ -1,0 +1,30 @@
+[
+  {
+    "name": "Client runtime (plugin, controller, @penumbra/core)",
+    "path": "dist/runtime/plugin.client.js",
+    "import": "*",
+    "ignore": ["vue", "#imports"],
+    "gzip": true,
+    "limit": "12 kB"
+  },
+  {
+    "name": "Standalone head script (default config)",
+    "path": ".size/head-inline.js",
+    "gzip": true,
+    "limit": "550 B"
+  },
+  {
+    "name": "Standalone head script (class mode, four themes)",
+    "path": ".size/head-inline-class.js",
+    "gzip": true,
+    "limit": "650 B"
+  },
+  {
+    "name": "PenumbraToggle (own code)",
+    "path": ".size/toggle.js",
+    "import": "*",
+    "ignore": ["vue", "#imports", "penumbra-composable"],
+    "gzip": true,
+    "limit": "1 kB"
+  }
+]

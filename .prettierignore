@@ -1,0 +1,13 @@
+dist/
+coverage/
+node_modules/
+bun.lock
+.blume/
+.nuxt/
+.output/
+.vercel/
+.data/
+apps/docs/docs/_generated/
+test-results/
+playwright-report/
+.size/

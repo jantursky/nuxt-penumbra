@@ -1,0 +1,150 @@
+---
+title: API reference
+description: usePenumbra, PenumbraToggle, definePenumbraTransition, the module options and the types.
+---
+
+## usePenumbra
+
+Auto-imported. Returns the current theme and the functions that change it.
+
+```ts
+function usePenumbra(): Penumbra
+
+interface Penumbra {
+  /** The theme that is applied now. Never 'system'. */
+  theme: ComputedRef<string>
+  /** What the visitor chose: a theme name, or 'system'. */
+  preference: ComputedRef<string>
+  /** The configured theme names, in order. */
+  themes: readonly string[]
+  setTheme: (preference: string, options?: SetThemeOptions) => void
+  toggleTheme: (options?: SetThemeOptions) => void
+}
+```
+
+```vue
+<script setup lang="ts">
+const { theme, preference, themes, setTheme, toggleTheme } = usePenumbra()
+</script>
+```
+
+- `theme` is the theme on screen. Until color-mode has resolved `'system'` in the browser, it returns the visitor's concrete choice, or `light` as a fallback.
+- `setTheme(preference, options)` switches to a theme by name, or to `'system'`. With a name that is not in `themes`, color-mode mode hands the value to color-mode, and standalone mode ignores it.
+- `toggleTheme(options)` moves to the next theme in `themes` after the current one, and wraps around. On the server it does nothing.
+- On the server, `setTheme` only writes the preference, because there is no page to animate.
+
+### SetThemeOptions
+
+```ts
+interface SetThemeOptions {
+  transition?: string // effect name, default: the module's `transition`
+  duration?: number // milliseconds, default: the module's `duration`
+  easing?: string // CSS easing, default: the module's `easing`
+  origin?: Origin // where a reveal starts
+  direction?: Direction // 'up' | 'down' | 'left' | 'right', default 'right'
+}
+
+type Origin = MouseEvent | Element | { x: number; y: number } | 'center'
+```
+
+Without an `origin`, the module uses a click from the last second, else the middle of the screen. See [transitions](/guides/transitions#origin).
+
+## PenumbraToggle
+
+Auto-registered component. A native `<button type="button">` that cycles through the themes.
+
+| Prop         | Type        | Default                   | What it does                          |
+| ------------ | ----------- | ------------------------- | ------------------------------------- |
+| `themes`     | `string[]`  | the module's `themes`     | Themes to cycle through.              |
+| `transition` | `string`    | the module's `transition` | Effect name.                          |
+| `duration`   | `number`    | the module's `duration`   | Milliseconds.                         |
+| `easing`     | `string`    | the module's `easing`     | CSS easing.                           |
+| `direction`  | `Direction` | `'right'`                 | Which way directional effects travel. |
+
+The click event is passed as the origin.
+
+### Slot
+
+The default slot fills the button content. The default content is the current theme name, empty until mount.
+
+```ts
+defineSlots<{
+  default?: (props: {
+    theme: string // the theme on screen
+    next: string // the theme a click switches to
+    ready: boolean // false until the page is mounted
+  }) => unknown
+}>()
+```
+
+```vue
+<PenumbraToggle v-slot="{ theme, next, ready }">
+  <MoonIcon v-if="ready && theme === 'light'" />
+  <SunIcon v-else-if="ready" />
+</PenumbraToggle>
+```
+
+### Accessible name
+
+`aria-label` is `Theme: <current>. Switch to <next>.` once mounted, and `Switch theme` before. See [accessibility](/guides/accessibility).
+
+### Styling
+
+The button has the class `penumbra-toggle` and no other style, except a border in forced colors mode. Style it yourself.
+
+## definePenumbraTransition
+
+Auto-imported alias of `defineTransition` from `@penumbra/core`. See [custom transitions](/guides/custom-transitions).
+
+```ts
+function definePenumbraTransition(name: string, definition: TransitionDefinition): TransitionDefinition
+```
+
+## Module options
+
+Set them under `penumbra` in `nuxt.config.ts`.
+
+```ts nuxt.config.ts
+export default defineNuxtConfig({
+  penumbra: {
+    mode: 'color-mode',
+    themes: ['light', 'dark'],
+    transition: 'circle',
+    duration: 500,
+    easing: 'ease-in-out',
+  },
+})
+```
+
+| Option       | Type                           | Default                                                                  | Mode       |
+| ------------ | ------------------------------ | ------------------------------------------------------------------------ | ---------- |
+| `mode`       | `'color-mode' \| 'standalone'` | `'color-mode'` if `@nuxtjs/color-mode` is installed, else `'standalone'` | both       |
+| `themes`     | `string[]`                     | `['light', 'dark']`                                                      | both       |
+| `transition` | `string`                       | `'circle'`                                                               | both       |
+| `duration`   | `number` (ms)                  | `500`                                                                    | both       |
+| `easing`     | `string`                       | `'ease-in-out'`                                                          | both       |
+| `default`    | `string`                       | `'system'`                                                               | standalone |
+| `attribute`  | `'class' \| 'data-*'`          | `'data-theme'`                                                           | standalone |
+| `storageKey` | `string`                       | `'penumbra-theme'`                                                       | standalone |
+
+Details:
+
+- `mode: 'color-mode'` without `@nuxtjs/color-mode` in `modules` throws at build time.
+- `themes` is the order `toggleTheme` cycles through. Names use letters, digits and dashes and start with a letter. `'system'` is reserved. Duplicates and an empty list throw.
+- `transition` is not checked against the registry. An unknown name switches instantly.
+- `duration` must be 0 or more. `0` disables the animation.
+- Standalone options are described in [standalone mode](/guides/standalone).
+
+## Types
+
+The package entry exports the option types:
+
+```ts
+import type { ModuleOptions, ResolvedOptions } from 'nuxt-penumbra'
+```
+
+`ResolvedOptions` is `Required<ModuleOptions>`, the shape of `runtimeConfig.public.penumbra`. The types in this page for `Penumbra`, `SetThemeOptions`, `Origin`, `Direction` and `TransitionDefinition` are not exported from the package entry.
+
+## The $penumbra plugin
+
+The client plugin provides `$penumbra` with `setTheme`, `toggleTheme`, `intercept` and `themes`. Use `usePenumbra()` instead; `$penumbra` is an internal detail and `intercept` is not meant to be called.

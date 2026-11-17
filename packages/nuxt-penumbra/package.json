@@ -58,7 +58,9 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "typecheck": "vue-tsc --noEmit -p tsconfig.json",
-    "lint:package": "publint --strict"
+    "lint:package": "publint --strict",
+    "test:pack": "node scripts/pack-test.js",
+    "size": "node scripts/measure-size.js && size-limit"
   },
   "dependencies": {
     "@nuxt/kit": "^4.6.4",
@@ -76,11 +78,14 @@
     "@nuxt/module-builder": "^1.0.4",
     "@nuxt/schema": "^4.6.4",
     "@nuxtjs/color-mode": "^4.1.0",
+    "@size-limit/esbuild": "^14",
+    "@size-limit/file": "^14",
     "@types/node": "^22",
     "@vitest/coverage-v8": "^5",
     "happy-dom": "^21.0.4",
     "nuxt": "^4.6.4",
     "publint": "^0.3.25",
+    "size-limit": "^14",
     "typescript": "~5.9.3",
     "vitest": "^5",
     "vue": "^3.5.45",

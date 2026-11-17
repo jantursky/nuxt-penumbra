@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions and ideas
+    url: https://github.com/jantursky/nuxt-penumbra/discussions
+    about: Ask how to do something before you open an issue.
+  - name: Documentation
+    url: https://nuxt-penumbra-docs.vercel.app
+    about: Guides, the module options and the composable.

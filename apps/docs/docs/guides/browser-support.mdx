@@ -1,0 +1,58 @@
+---
+title: Browser support
+description: Which browsers run the animation, what happens without it, what has been checked, and what has not.
+---
+
+The animation needs `document.startViewTransition`. Without it the theme still changes, instantly. The theme logic itself uses `matchMedia`, and in standalone mode `localStorage` and the `storage` event.
+
+:::warning
+The "needs" column comes from [MDN browser compatibility data](https://developer.mozilla.org/en-US/docs/Web/API/Document/startViewTransition#browser_compatibility), not from our tests. A browser counts as checked only where the last column says what was run.
+:::
+
+| Browser  | startViewTransition | Behavior without it | Checked on                                                                                                                               |
+| -------- | ------------------- | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Chromium | 111 (MDN)           | Instant switch      | Chromium 159 (Playwright, Linux and macOS, headless and headed), 2026-11-17: animation, navigation guard, reduced motion, rapid toggling |
+| WebKit   | 18 (MDN)            | Instant switch      | WebKit (Playwright's current build), 2026-11-17: animation, navigation guard, Nuxt UI components                                         |
+| Firefox  | 144 (MDN)           | Instant switch      | Firefox (Playwright's current build), 2026-11-17: has no View Transitions API there, and the instant fallback works                      |
+| Edge     | 111 (MDN)           | Instant switch      | unverified                                                                                                                               |
+| Safari   | 18 (MDN)            | Instant switch      | unverified (WebKit in Playwright is not the same as Safari)                                                                              |
+| Others   |                     |                     | unverified                                                                                                                               |
+
+Firefox in the test environment does not have the API, so the theme switches instantly there. That fallback was checked. Whether a newer Firefox with the API behaves the same has not been checked.
+
+## What was checked
+
+- With `@nuxtjs/color-mode`, `mode: 'color-mode'` animates changes to `preference`, including direct writes from Nuxt UI's `UColorModeButton`, `UColorModeSwitch` and `UColorModeSelect`. Checked in Chromium and WebKit.
+- A theme transition does not run during a page navigation. Checked in Chromium and WebKit with `experimental.viewTransition`.
+- Reduced motion gives an instant switch.
+- A second toggle during a running transition skips the first and ends on the latest theme.
+- No flash on reload with cookie storage.
+
+## Real GPU Chrome
+
+All Chromium runs used Playwright's build. Rapid toggling in a Chrome with a real GPU has not been tried. The crash that led to the cancel-first rule showed up in headless Chromium 159, and the rule is in `@penumbra/core`.
+
+## Compatibility
+
+The module declares `nuxt: '>=3.12.0'`. That floor is a guess. The module was built and run on Nuxt 4. These have not been run:
+
+- Nuxt 3
+- `ssr: false`
+- `nuxt generate`
+- `@nuxtjs/color-mode` with `localStorage` storage and SSR
+- Safari, Edge, and Firefox with the API
+- Browser versions other than the ones in the table
+
+## Feature detection
+
+The module tests `typeof document.startViewTransition === 'function'` on every change. You do not need your own check. If you want to show something different when animation is unavailable:
+
+```ts
+const canAnimate = typeof document.startViewTransition === 'function'
+```
+
+## Other reasons for no animation
+
+Reduced motion, a zero duration, an unknown effect name and an active navigation also give an instant switch. They are listed under [transitions](/guides/transitions#when-it-switches-instantly).
+
+Related: [accessibility](/guides/accessibility), [not covered yet](/guides/not-covered-yet).

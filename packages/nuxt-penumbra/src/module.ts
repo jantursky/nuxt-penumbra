@@ -29,7 +29,7 @@ export type ResolvedOptions = Required<ModuleOptions>
 
 const NAME = /^[a-z][a-z0-9-]*$/i
 
-const penumbra: NuxtModule<ModuleOptions, ModuleOptions, false> = defineNuxtModule<ModuleOptions>({
+const penumbra: NuxtModule<ModuleOptions, ModuleOptions> = defineNuxtModule<ModuleOptions>({
   meta: {
     name: 'nuxt-penumbra',
     configKey: 'penumbra',
@@ -68,7 +68,7 @@ const penumbra: NuxtModule<ModuleOptions, ModuleOptions, false> = defineNuxtModu
 
       // Standalone mode has no color-mode script to prevent a flash, so it brings its own, first in <head>.
       if (mode === 'standalone') {
-        nuxt.options.app.head.script ||= []
+        nuxt.options.app.head.script ??= []
         nuxt.options.app.head.script.push({
           innerHTML: buildHeadScript(resolved),
           tagPosition: 'head',

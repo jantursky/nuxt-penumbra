@@ -1,0 +1,55 @@
+/* Maps the shared design tokens (design/DESIGN.md) onto Blume's tokens. */
+/* The path is relative to .blume/src/generated, where Blume inlines this file. */
+@import '../../../../../design/tokens.css';
+
+:root,
+:root[data-theme='dark'] {
+  --blume-background: var(--canvas);
+  --blume-foreground: var(--text);
+  --blume-muted: var(--surface-raised);
+  --blume-muted-foreground: var(--text-muted);
+  --blume-border: var(--border);
+  --blume-accent-foreground: var(--on-accent);
+  --blume-code-background: var(--surface-raised);
+  --blume-radius: var(--radius-card);
+  --blume-font-mono: var(--font-mono);
+}
+
+/* Yellow is a fill, never a text color on the light canvas. Links and active states are black there. */
+:root {
+  --blume-accent: var(--text);
+}
+
+:root[data-theme='dark'] {
+  --blume-accent: var(--accent);
+}
+
+/* Condensed display type is for the page title. Smaller headings use the body face. */
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--blume-font-body);
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+/* No shadows on any surface. */
+*,
+*::before,
+*::after {
+  box-shadow: none !important;
+}
+
+/* A filled accent is yellow with black text, in both modes. */
+.bg-accent,
+[class*='bg-action'] {
+  background-color: var(--accent);
+  color: var(--on-accent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}

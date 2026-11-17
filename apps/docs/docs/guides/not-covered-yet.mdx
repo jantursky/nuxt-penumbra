@@ -1,0 +1,27 @@
+---
+title: Not covered yet
+description: What nuxt-penumbra does not do, and what has not been tested.
+---
+
+## Not tested
+
+These are untested rather than known to fail.
+
+- Nuxt 3. The compatibility floor of `>=3.12.0` is a guess.
+- `ssr: false`, `nuxt generate`, and `@nuxtjs/color-mode` with `localStorage` storage under SSR.
+- Safari, Edge, and Firefox versions that have the View Transitions API. See [browser support](/guides/browser-support).
+- Rapid toggling in Chrome on a real GPU.
+- A strict Content-Security-Policy with the standalone head script.
+- Specific screen readers.
+- Each effect looked at one by one in every browser.
+
+## Not done
+
+- Page navigation does not get a theme animation. A theme change during a navigation applies instantly.
+- No per-component or per-route theme. There is one theme for the whole document.
+- No built-in picker with a list or radio group. `PenumbraToggle` cycles through `themes`; build a list with `usePenumbra().setTheme`.
+- Reduced motion is read when the theme changes, not watched live.
+- No config option for a different effect per theme direction.
+- The package entry exports `ModuleOptions` and `ResolvedOptions` only. The types of the composable and the transition definition are not exported.
+
+If you hit something that should work, open an issue at [github.com/jantursky/nuxt-penumbra](https://github.com/jantursky/nuxt-penumbra/issues).

@@ -1,0 +1,34 @@
+---
+title: SSR and storage
+description: What the server knows about the theme, how the page avoids a flash, and what to expect with cookie and localStorage storage.
+---
+
+The module does no server work in color-mode mode. What the server and the first paint show depends on how the theme is stored.
+
+## Color-mode with cookie storage
+
+With cookie storage, the server knows the visitor's `preference`. Color-mode leaves `value` as `'system'` until the browser resolves it, which means the server cannot tell whether a `system` visitor sees light or dark.
+
+The `<html>` class is set by color-mode's inline head script before first paint. There is no flash. This was checked.
+
+`usePenumbra().theme` is never `'system'`. While color-mode still reports `'system'`, it returns the visitor's choice when that is a concrete theme, and otherwise `light` (or the first theme in the list if `light` is not one of them).
+
+## Color-mode with localStorage storage
+
+With `localStorage` storage, the server cannot read the choice. It renders the fallback, and color-mode's inline script fixes the `<html>` class before paint, so the page itself does not flash.
+
+Anything rendered from the theme can still differ between server and client. Hydration text that depends on the theme may mismatch. `PenumbraToggle` avoids this by waiting for mount before it shows its live label. If you render theme-dependent text yourself, do the same: show a neutral placeholder until `onMounted`, or use `<ClientOnly>`.
+
+This combination has not been tested with the module. It is listed as unverified under [browser support and compatibility](/guides/browser-support#compatibility).
+
+## Standalone mode
+
+The store keeps the choice in `localStorage` only. The server renders the `default` (the `light` state if `default` is `'system'`), the head script applies the real theme before paint, and the store adopts it after hydration. The same label rule applies. See [standalone mode](/guides/standalone).
+
+## Initial writes are not animated
+
+In color-mode mode the module starts watching `preference` after hydration, one tick after `app:mounted`. The writes color-mode makes while it reads the stored value are therefore applied without an animation.
+
+## Not tested
+
+`ssr: false`, `nuxt generate`, and `localStorage` color-mode storage with SSR have not been run. Treat them as unverified.
