@@ -2,7 +2,9 @@ import { nextTick, watch } from 'vue'
 
 import { defineNuxtPlugin, useRouter, useRuntimeConfig } from '#imports'
 
-import { createController, type ColorModeLike } from './controller'
+import { createController } from './controller'
+import { createStandaloneStore, type ThemeState } from './standalone'
+import { useThemeState } from './state'
 
 /** A click older than this is not where the visitor meant the reveal to start. */
 const CLICK_WINDOW = 1000
@@ -44,18 +46,24 @@ export default defineNuxtPlugin((nuxtApp) => {
     { capture: true, passive: true },
   )
 
-  const colorMode = (): ColorModeLike => nuxtApp.$colorMode as ColorModeLike
-  const controller = createController(colorMode, penumbra, {
+  // Read lazily: color-mode's own plugin may run after this one.
+  const state = (): ThemeState => nuxtApp.runWithContext(useThemeState)
+  const controller = createController(state, penumbra, {
     nextTick,
     isBusy: () => navigating || pageTransition !== undefined,
     lastClick: () => (click !== undefined && Date.now() - click.at < CLICK_WINDOW ? click.event : undefined),
   })
 
-  // After mount, so color-mode's own hydration writes are not animated.
   nuxtApp.hook('app:mounted', () => {
+    if (penumbra.mode === 'standalone') {
+      // After hydration, so the stored choice does not clash with the server-rendered markup.
+      createStandaloneStore(penumbra, state()).start()
+      return
+    }
+    // Color-mode mode: after its own hydration writes, so they are not animated.
     void nextTick().then(() => {
       watch(
-        () => colorMode().preference,
+        () => state().preference,
         (next, previous) => {
           controller.intercept(next, previous)
         },

@@ -2,7 +2,8 @@ import { computed, type ComputedRef } from 'vue'
 
 import { useNuxtApp } from '#imports'
 
-import type { ColorModeLike, Controller, SetThemeOptions } from '../controller'
+import type { Controller, SetThemeOptions } from '../controller'
+import { useThemeState } from '../state'
 
 export { defineTransition as definePenumbraTransition } from '@penumbra/core'
 export type { Direction, Origin, TransitionContext, TransitionDefinition } from '@penumbra/core'
@@ -21,16 +22,16 @@ export interface Penumbra {
 
 export function usePenumbra(): Penumbra {
   const nuxtApp = useNuxtApp()
-  const colorMode = nuxtApp.$colorMode as ColorModeLike
+  const state = useThemeState()
   const injected = nuxtApp.$penumbra as (Controller & { themes: readonly string[] }) | undefined
   return {
-    theme: computed(() => colorMode.value),
-    preference: computed(() => colorMode.preference),
+    theme: computed(() => state.value),
+    preference: computed(() => state.preference),
     themes: injected?.themes ?? [],
     // On the server there is no page to animate: writing the preference is all a theme change means there.
     setTheme: (preference, options) => {
       if (injected) injected.setTheme(preference, options)
-      else colorMode.preference = preference
+      else state.preference = preference
     },
     toggleTheme: (options) => {
       injected?.toggleTheme(options)

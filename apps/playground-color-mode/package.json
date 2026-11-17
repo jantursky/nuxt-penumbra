@@ -3,9 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "nuxt dev --port 3100",
+    "dev": "nuxt dev --port 4310",
     "build": "nuxt build",
-    "preview": "nuxt preview --port 3100",
+    "preview": "nuxt preview --port 4310",
     "generate": "nuxt generate",
     "typecheck": "nuxt prepare && vue-tsc --noEmit",
     "test:e2e": "playwright test"

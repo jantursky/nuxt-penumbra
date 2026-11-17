@@ -6,7 +6,7 @@ export default defineConfig({
     include: ['test/**/*.test.ts'],
     coverage: {
       provider: 'v8',
-      include: ['src/runtime/controller.ts'],
+      include: ['src/runtime/controller.ts', 'src/runtime/standalone.ts', 'src/runtime/head-script.ts'],
       reporter: ['text-summary', 'text', 'html', 'lcov'],
       thresholds: { statements: 100, branches: 100, functions: 100, lines: 100 },
     },

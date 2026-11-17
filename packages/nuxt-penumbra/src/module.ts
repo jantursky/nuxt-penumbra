@@ -1,6 +1,8 @@
 import type { NuxtModule } from '@nuxt/schema'
 import { addImports, addPlugin, createResolver, defineNuxtModule, hasNuxtModule } from '@nuxt/kit'
 
+import { buildHeadScript, SYSTEM, supportsSystem } from './runtime/head-script'
+
 export interface ModuleOptions {
   /**
    * `'color-mode'` animates changes to `@nuxtjs/color-mode`'s `preference` and never stores a theme itself.
@@ -15,6 +17,12 @@ export interface ModuleOptions {
   duration?: number
   /** CSS easing of the effect. Default `'ease-in-out'`. */
   easing?: string
+  /** Standalone mode: theme to use before the visitor picks one, or `'system'` to follow `prefers-color-scheme`. Default `'system'`. */
+  default?: string
+  /** Standalone mode: `'class'` toggles a class on `<html>`; `'data-*'` sets that attribute. Default `'data-theme'`. */
+  attribute?: 'class' | `data-${string}`
+  /** Standalone mode: localStorage key that holds the visitor's choice. Default `'penumbra-theme'`. */
+  storageKey?: string
 }
 
 export type ResolvedOptions = Required<ModuleOptions>
@@ -28,25 +36,40 @@ const penumbra: NuxtModule<ModuleOptions, ModuleOptions, false> = defineNuxtModu
     compatibility: { nuxt: '>=3.12.0' },
   },
   defaults: {
-    themes: ['light', 'dark'],
     transition: 'circle',
     duration: 500,
     easing: 'ease-in-out',
+    default: SYSTEM,
+    attribute: 'data-theme',
+    storageKey: 'penumbra-theme',
   },
   setup(options, nuxt) {
     const mode = options.mode ?? (hasNuxtModule('@nuxtjs/color-mode', nuxt) ? 'color-mode' : 'standalone')
-    const resolved: ResolvedOptions = { ...(options as ResolvedOptions), mode }
+    // `themes` has no entry in `defaults`: Nuxt merges arrays with `defu`, which would append the user's list to ours.
+    const resolved: ResolvedOptions = {
+      ...(options as ResolvedOptions),
+      themes: options.themes ?? ['light', 'dark'],
+      mode,
+    }
     validate(resolved)
 
-    // Standalone mode arrives in a later commit; until then the module only registers its types.
-    if (mode === 'standalone') return
-    if (!hasNuxtModule('@nuxtjs/color-mode', nuxt)) {
+    if (mode === 'color-mode' && !hasNuxtModule('@nuxtjs/color-mode', nuxt)) {
       throw new Error('nuxt-penumbra: mode "color-mode" needs `@nuxtjs/color-mode` in `modules`.')
     }
 
     const resolver = createResolver(import.meta.url)
     nuxt.options.build.transpile.push(resolver.resolve('./runtime'))
     nuxt.options.runtimeConfig.public.penumbra = resolved
+
+    // Standalone mode has no color-mode script to prevent a flash, so it brings its own, first in <head>.
+    if (mode === 'standalone') {
+      nuxt.options.app.head.script ||= []
+      nuxt.options.app.head.script.push({
+        innerHTML: buildHeadScript(resolved),
+        tagPosition: 'head',
+        tagPriority: 'critical',
+      })
+    }
 
     addPlugin(resolver.resolve('./runtime/plugin.client'))
     addImports([
@@ -69,6 +92,21 @@ function validate(options: ResolvedOptions): void {
   }
   if (new Set(options.themes).size !== options.themes.length) {
     throw new Error('nuxt-penumbra: `themes` contains duplicates.')
+  }
+  if (options.themes.includes(SYSTEM))
+    throw new Error('nuxt-penumbra: "system" is reserved and cannot be a theme name.')
+  if (options.mode === 'standalone') {
+    if (options.default === SYSTEM ? !supportsSystem(options.themes) : !options.themes.includes(options.default)) {
+      throw new Error(
+        options.default === SYSTEM
+          ? 'nuxt-penumbra: `default: "system"` needs the themes "light" and "dark".'
+          : `nuxt-penumbra: \`default\` "${options.default}" is not in \`themes\`.`,
+      )
+    }
+    if (!/^(class|data-[a-z][a-z0-9-]*)$/.test(options.attribute)) {
+      throw new Error(`nuxt-penumbra: \`attribute\` must be "class" or "data-*", got "${options.attribute}".`)
+    }
+    if (options.storageKey === '') throw new Error('nuxt-penumbra: `storageKey` cannot be empty.')
   }
   if (!Number.isFinite(options.duration) || options.duration < 0) {
     throw new Error('nuxt-penumbra: `duration` must be a number of milliseconds, 0 or more.')

@@ -6,10 +6,10 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? 'github' : 'list',
-  use: { baseURL: 'http://localhost:3100', trace: 'on-first-retry' },
+  use: { baseURL: 'http://localhost:4310', trace: 'on-first-retry' },
   webServer: {
     command: 'bun run build && bun run preview',
-    url: 'http://localhost:3100',
+    url: 'http://localhost:4310',
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
   },
