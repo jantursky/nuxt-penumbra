@@ -1,0 +1,17 @@
+/*
+ * Tailwind and Nuxt UI for the `ui` layout only. Everything sits in a cascade layer and Tailwind's preflight is left
+ * out, so the demo's own unlayered, class-based styles win and nothing outside `.ui-scope` is reset.
+ */
+@layer theme, base, components, utilities;
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+@import '@nuxt/ui';
+
+@layer base {
+  .ui-scope :where(button, input, select, textarea) {
+    font: inherit;
+    color: inherit;
+    background: transparent;
+    border: 0;
+  }
+}
