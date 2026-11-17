@@ -11,5 +11,5 @@ import { initialState, type ThemeState } from './standalone'
 export function useThemeState(): ThemeState {
   const { penumbra } = useRuntimeConfig().public
   if (penumbra.mode === 'color-mode') return useNuxtApp().$colorMode as ThemeState
-  return useState<ThemeState>('penumbra', () => reactive(initialState(penumbra))).value
+  return useState<ThemeState>('nuxt-penumbra:theme', () => reactive(initialState(penumbra))).value
 }

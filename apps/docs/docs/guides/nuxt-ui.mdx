@@ -30,7 +30,7 @@ Those components write to `useColorMode().preference` directly. nuxt-penumbra wa
 
 Because the module only intercepts `preference`, it never stores a theme in this mode. Color-mode's storage, cookie and `system` handling stay in charge.
 
-This was checked in Chromium and WebKit with the three components and no wrapper. The reveal starts at the center of the screen, or at the last click if it happened within the previous second.
+`nuxt-ui.spec.ts` in the Nuxt UI playground runs the three components with no wrapper, in Chromium and WebKit. The reveal starts at the center of the screen, or at the last click if it happened within the previous second.
 
 ## Setup order
 
@@ -38,7 +38,7 @@ The module configures itself after all modules (`modules:done`), so it sees the 
 
 ## disableTransition
 
-Nuxt UI registers color-mode with `disableTransition: true`. That only suppresses CSS transitions for a frame while the class changes. It does not interfere with view transitions; this was checked.
+Nuxt UI registers color-mode with `disableTransition: true`. That only suppresses CSS transitions for a frame while the class changes. It does not interfere with view transitions, as the same spec shows.
 
 ## Using the toggle instead
 

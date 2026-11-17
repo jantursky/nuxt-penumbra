@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/apps/docs/public/logo.svg" alt="nuxt-penumbra logo" width="96" height="96">
+  <img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/.github/assets/banner.svg" alt="Nuxt Penumbra: animated theme transitions for Nuxt" width="420">
 </p>
 
 # nuxt-penumbra
@@ -52,25 +52,40 @@ Nuxt UI's `UColorModeButton`, `UColorModeSwitch` and `UColorModeSelect` are anim
 
 ## Transitions
 
-Fifteen effects ship with the module. They come from [`@penumbra/core`](https://github.com/jantursky/astro-eclipse/tree/main/packages/core), the engine that [astro-eclipse](https://github.com/jantursky/astro-eclipse) uses too, so names and options match. Register your own with `definePenumbraTransition`.
+Thirty effects ship with the module. They come from [`@penumbra/core`](https://github.com/jantursky/astro-eclipse/tree/main/packages/core), the engine that [astro-eclipse](https://github.com/jantursky/astro-eclipse) uses too, so names and options match. Register your own with `definePenumbraTransition`.
 
 <table>
 <tr><th>Name</th><th>Preview</th></tr>
 <tr><td><code>circle</code></td><td><img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/.github/assets/transitions/circle.gif" alt="The circle transition switching the demo from light to dark" width="320"></td></tr>
 <tr><td><code>circle-inverse</code></td><td><img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/.github/assets/transitions/circle-inverse.gif" alt="The circle-inverse transition switching the demo from light to dark" width="320"></td></tr>
+<tr><td><code>fade</code></td><td><img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/.github/assets/transitions/fade.gif" alt="The fade transition switching the demo from light to dark" width="320"></td></tr>
 <tr><td><code>wipe</code></td><td><img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/.github/assets/transitions/wipe.gif" alt="The wipe transition switching the demo from light to dark" width="320"></td></tr>
 <tr><td><code>diamond</code></td><td><img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/.github/assets/transitions/diamond.gif" alt="The diamond transition switching the demo from light to dark" width="320"></td></tr>
 <tr><td><code>iris</code></td><td><img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/.github/assets/transitions/iris.gif" alt="The iris transition switching the demo from light to dark" width="320"></td></tr>
 <tr><td><code>blinds</code></td><td><img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/.github/assets/transitions/blinds.gif" alt="The blinds transition switching the demo from light to dark" width="320"></td></tr>
-<tr><td><code>blur-circle</code></td><td><img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/.github/assets/transitions/blur-circle.gif" alt="The blur-circle transition switching the demo from light to dark" width="320"></td></tr>
+<tr><td><code>scan</code></td><td><img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/.github/assets/transitions/scan.gif" alt="The scan transition switching the demo from light to dark" width="320"></td></tr>
+<tr><td><code>zoom</code></td><td><img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/.github/assets/transitions/zoom.gif" alt="The zoom transition switching the demo from light to dark" width="320"></td></tr>
+<tr><td><code>slide</code></td><td><img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/.github/assets/transitions/slide.gif" alt="The slide transition switching the demo from light to dark" width="320"></td></tr>
+<tr><td><code>split</code></td><td><img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/.github/assets/transitions/split.gif" alt="The split transition switching the demo from light to dark" width="320"></td></tr>
 <tr><td><code>star</code></td><td><img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/.github/assets/transitions/star.gif" alt="The star transition switching the demo from light to dark" width="320"></td></tr>
+<tr><td><code>blur-circle</code></td><td><img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/.github/assets/transitions/blur-circle.gif" alt="The blur-circle transition switching the demo from light to dark" width="320"></td></tr>
 <tr><td><code>diagonal</code></td><td><img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/.github/assets/transitions/diagonal.gif" alt="The diagonal transition switching the demo from light to dark" width="320"></td></tr>
 <tr><td><code>diagonal-soft</code></td><td><img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/.github/assets/transitions/diagonal-soft.gif" alt="The diagonal-soft transition switching the demo from light to dark" width="320"></td></tr>
-<tr><td><code>split</code></td><td><img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/.github/assets/transitions/split.gif" alt="The split transition switching the demo from light to dark" width="320"></td></tr>
-<tr><td><code>scan</code></td><td><img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/.github/assets/transitions/scan.gif" alt="The scan transition switching the demo from light to dark" width="320"></td></tr>
-<tr><td><code>slide</code></td><td><img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/.github/assets/transitions/slide.gif" alt="The slide transition switching the demo from light to dark" width="320"></td></tr>
-<tr><td><code>zoom</code></td><td><img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/.github/assets/transitions/zoom.gif" alt="The zoom transition switching the demo from light to dark" width="320"></td></tr>
-<tr><td><code>fade</code></td><td><img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/.github/assets/transitions/fade.gif" alt="The fade transition switching the demo from light to dark" width="320"></td></tr>
+<tr><td><code>square</code></td><td><img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/.github/assets/transitions/square.gif" alt="The square transition switching the demo from light to dark" width="320"></td></tr>
+<tr><td><code>triangle</code></td><td><img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/.github/assets/transitions/triangle.gif" alt="The triangle transition switching the demo from light to dark" width="320"></td></tr>
+<tr><td><code>sunburst</code></td><td><img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/.github/assets/transitions/sunburst.gif" alt="The sunburst transition switching the demo from light to dark" width="320"></td></tr>
+<tr><td><code>cross</code></td><td><img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/.github/assets/transitions/cross.gif" alt="The cross transition switching the demo from light to dark" width="320"></td></tr>
+<tr><td><code>heart</code></td><td><img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/.github/assets/transitions/heart.gif" alt="The heart transition switching the demo from light to dark" width="320"></td></tr>
+<tr><td><code>ripple</code></td><td><img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/.github/assets/transitions/ripple.gif" alt="The ripple transition switching the demo from light to dark" width="320"></td></tr>
+<tr><td><code>clock</code></td><td><img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/.github/assets/transitions/clock.gif" alt="The clock transition switching the demo from light to dark" width="320"></td></tr>
+<tr><td><code>curtain</code></td><td><img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/.github/assets/transitions/curtain.gif" alt="The curtain transition switching the demo from light to dark" width="320"></td></tr>
+<tr><td><code>stairs</code></td><td><img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/.github/assets/transitions/stairs.gif" alt="The stairs transition switching the demo from light to dark" width="320"></td></tr>
+<tr><td><code>mosaic</code></td><td><img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/.github/assets/transitions/mosaic.gif" alt="The mosaic transition switching the demo from light to dark" width="320"></td></tr>
+<tr><td><code>blur</code></td><td><img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/.github/assets/transitions/blur.gif" alt="The blur transition switching the demo from light to dark" width="320"></td></tr>
+<tr><td><code>flip</code></td><td><img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/.github/assets/transitions/flip.gif" alt="The flip transition switching the demo from light to dark" width="320"></td></tr>
+<tr><td><code>spin</code></td><td><img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/.github/assets/transitions/spin.gif" alt="The spin transition switching the demo from light to dark" width="320"></td></tr>
+<tr><td><code>cover</code></td><td><img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/.github/assets/transitions/cover.gif" alt="The cover transition switching the demo from light to dark" width="320"></td></tr>
+<tr><td><code>reveal</code></td><td><img src="https://raw.githubusercontent.com/jantursky/nuxt-penumbra/main/.github/assets/transitions/reveal.gif" alt="The reveal transition switching the demo from light to dark" width="320"></td></tr>
 </table>
 
 ## How it works
@@ -80,7 +95,7 @@ Fifteen effects ship with the module. They come from [`@penumbra/core`](https://
 3. A write that did not come from this module (Nuxt UI's buttons, a `v-model`) is caught by a synchronous watcher in `src/runtime/plugin.client.ts`. It puts the old value back and replays the change inside a view transition, so the old page is still on screen for the snapshot.
 4. In standalone mode `src/runtime/standalone.ts` is the store. Writing `preference` saves it, resolves `system`, and updates `<html>` synchronously. `src/runtime/head-script.ts` builds the inline script that applies the stored theme before first paint and follows the system and other tabs.
 5. A theme change that arrives while the router is navigating, or while Nuxt's own page transition runs, is applied instantly: two view transitions would cancel each other. Reduced motion and browsers without the API also get the instant switch.
-6. The animation itself runs in `@penumbra/core`: it injects the keyframes for the chosen effect on `::view-transition-old(root)` and `::view-transition-new(root)`, and cancels a running effect before the next one starts.
+6. The animation itself runs in `@penumbra/core`: it plays the chosen effect on `::view-transition-old(root)` and `::view-transition-new(root)` with the Web Animations API, and cancels a running effect before the next one starts.
 
 ## Prior art
 
@@ -105,11 +120,95 @@ Without the API the theme switches instantly and nothing throws. Nuxt 3, `ssr: f
 
 - Nuxt 3 is not tested; the compatibility floor is a guess.
 - Per-element transitions: the effect always covers the whole page.
-- Theme changes triggered by other tabs are not animated.
+- Other tabs follow a theme change only in standalone mode, and without animation. `@nuxtjs/color-mode` does not sync tabs, so in color-mode mode they update on reload.
 
 ## Using Astro?
 
 See [astro-eclipse](https://github.com/jantursky/astro-eclipse). It uses the same engine.
+
+<!-- PROJECTS:START -->
+
+## Other Projects & Products
+
+<table align="center">
+  <tr>
+    <td align="center" valign="top" width="33%">
+      <a href="https://github.com/jantursky/" target="_blank" rel="noopener noreferrer">
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="https://apptiary.com/projects/icons/github-dark.svg">
+          <img src="https://apptiary.com/projects/icons/github-light.svg" alt="GitHub Profile" width="48" height="48">
+        </picture>
+        <br><b>GitHub Profile</b>
+      </a>
+      <br><sub>Open-source repositories &amp; code</sub>
+    </td>
+    <td align="center" valign="top" width="33%">
+      <a href="https://podcasttotranscript.com/?utm_source=nuxt-penumbra&amp;utm_medium=readme&amp;utm_campaign=other-projects&amp;utm_content=podcast-to-transcript" target="_blank" rel="noopener noreferrer">
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="https://apptiary.com/projects/icons/podcasttotranscript-dark.svg">
+          <img src="https://apptiary.com/projects/icons/podcasttotranscript-light.svg" alt="Podcast To Transcript" width="48" height="48">
+        </picture>
+        <br><b>Podcast To Transcript</b>
+      </a>
+      <br><sub>Podcast transcripts, summaries &amp; chapters</sub>
+    </td>
+    <td align="center" valign="top" width="33%">
+      <a href="https://loupekit.com/?utm_source=nuxt-penumbra&amp;utm_medium=readme&amp;utm_campaign=other-projects&amp;utm_content=loupekit" target="_blank" rel="noopener noreferrer">
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="https://apptiary.com/projects/icons/loupekit-light.svg">
+          <img src="https://apptiary.com/projects/icons/loupekit-light.svg" alt="LoupeKit" width="48" height="48">
+        </picture>
+        <br><b>LoupeKit</b>
+      </a>
+      <br><sub>Tech stack, design tokens, AI code checker</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" valign="top" width="33%">
+      <a href="https://textarray.com/?utm_source=nuxt-penumbra&amp;utm_medium=readme&amp;utm_campaign=other-projects&amp;utm_content=textarray" target="_blank" rel="noopener noreferrer">
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="https://apptiary.com/projects/icons/textarray-light.svg">
+          <img src="https://apptiary.com/projects/icons/textarray-light.svg" alt="TextArray" width="48" height="48">
+        </picture>
+        <br><b>TextArray</b>
+      </a>
+      <br><sub>Online text transformation tool</sub>
+    </td>
+    <td align="center" valign="top" width="33%">
+      <a href="https://addonhive.com/?utm_source=nuxt-penumbra&amp;utm_medium=readme&amp;utm_campaign=other-projects&amp;utm_content=addonhive" target="_blank" rel="noopener noreferrer">
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="https://apptiary.com/projects/icons/addonhive-dark-v3.svg">
+          <img src="https://apptiary.com/projects/icons/addonhive-light-v3.svg" alt="AddonHive" width="48" height="48">
+        </picture>
+        <br><b>AddonHive</b>
+      </a>
+      <br><sub>Addons &amp; integrations hub</sub>
+    </td>
+    <td align="center" valign="top" width="33%">
+      <a href="https://apptiary.com/mobile/games/?utm_source=nuxt-penumbra&amp;utm_medium=readme&amp;utm_campaign=other-projects&amp;utm_content=mobile-games-and-apps" target="_blank" rel="noopener noreferrer">
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="https://apptiary.com/projects/icons/stores-dark-v2.svg">
+          <img src="https://apptiary.com/projects/icons/stores-light-v2.svg" alt="Mobile Games &amp; Apps" width="48" height="48">
+        </picture>
+        <br><b>Mobile Games &amp; Apps</b>
+      </a>
+      <br><sub>Android &amp; iOS Applications</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" valign="top" width="33%">
+      <a href="https://jantursky.com/?utm_source=nuxt-penumbra&amp;utm_medium=readme&amp;utm_campaign=other-projects&amp;utm_content=and-more" target="_blank" rel="noopener noreferrer">
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="https://apptiary.com/projects/icons/more-dark.svg">
+          <img src="https://apptiary.com/projects/icons/more-light.svg" alt="And more" width="48" height="48">
+        </picture>
+        <br><b>And more</b>
+      </a>
+      <br><sub>More projects, writing &amp; contact</sub>
+    </td>
+  </tr>
+</table>
+<!-- PROJECTS:END -->
 
 ## License
 

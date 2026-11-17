@@ -1,7 +1,7 @@
 import { reactive, watch } from 'vue'
 
 import type { ColorModeLike } from './controller'
-import { SYSTEM, supportsSystem, type StandaloneConfig } from './head-script'
+import { HEAD_OFF, SYSTEM, supportsSystem, type StandaloneConfig } from './head-script'
 
 export { SYSTEM, supportsSystem, buildHeadScript, type StandaloneConfig } from './head-script'
 
@@ -71,8 +71,12 @@ export function createStandaloneStore(config: StandaloneConfig, state: ThemeStat
 
   const stop = watch(
     () => state.preference,
-    (preference) => {
-      if (!isPreference(config, preference)) return
+    (preference, previous) => {
+      if (!isPreference(config, preference)) {
+        // Not a theme: put the last valid choice back, so `preference` never reports a name that does nothing.
+        state.preference = previous
+        return
+      }
       if (!following) persist(preference)
       sync(preference)
     },
@@ -101,12 +105,15 @@ export function createStandaloneStore(config: StandaloneConfig, state: ThemeStat
     follow(readStored())
     media.addEventListener('change', onMedia)
     addEventListener('storage', onStorage)
+    // The head script's own listeners step aside: two listeners applying the system theme could disagree.
+    Object.assign(window, { [HEAD_OFF]: true })
   }
 
   function dispose(): void {
     stop()
     media.removeEventListener('change', onMedia)
     removeEventListener('storage', onStorage)
+    Reflect.deleteProperty(window, HEAD_OFF)
   }
 
   return { state, start, dispose }

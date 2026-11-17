@@ -116,6 +116,53 @@ describe('setTheme', () => {
   })
 })
 
+describe('rapid calls', () => {
+  it('ends on the later theme when a second call goes back before the first has run', () => {
+    const { controller, colorMode } = setup({ value: 'light' })
+    controller.setTheme('dark')
+    controller.setTheme('light')
+    expect(runTransition).toHaveBeenCalledTimes(2)
+    // The browser runs the callbacks in order; the first is stale and must not write.
+    const [first, second] = vi.mocked(runTransition).mock.calls.map(([change]) => change)
+    void first!()
+    expect(colorMode.preference).toBe('light')
+    void second!()
+    expect(colorMode.preference).toBe('light')
+  })
+
+  it('keeps one change in flight for the same target and writes the preference asked for last', () => {
+    const { controller, colorMode, changeOf } = setup({ value: 'light' })
+    vi.stubGlobal('matchMedia', () => ({ matches: true }))
+    controller.setTheme('dark')
+    controller.setTheme('system')
+    expect(runTransition).toHaveBeenCalledOnce()
+    void changeOf()()
+    expect(colorMode.preference).toBe('system')
+  })
+
+  it('toggles from the theme in flight, not from the one still on screen', () => {
+    const { controller, requestOf } = setup({ value: 'light' })
+    controller.toggleTheme()
+    controller.toggleTheme()
+    expect(vi.mocked(runTransition)).toHaveBeenCalledTimes(2)
+    expect(requestOf().name).toBe('circle')
+    const [first, second] = vi.mocked(runTransition).mock.calls.map(([change]) => change)
+    void first!()
+    void second!()
+  })
+
+  it('writes at once, and drops what was in flight, when the page becomes forced', () => {
+    const { controller, colorMode } = setup({ value: 'light' })
+    controller.setTheme('dark')
+    ;(colorMode as { forced: boolean }).forced = true
+    controller.setTheme('sepia')
+    expect(colorMode.preference).toBe('sepia')
+    const [first] = vi.mocked(runTransition).mock.calls.map(([change]) => change)
+    void first!()
+    expect(colorMode.preference).toBe('sepia')
+  })
+})
+
 describe('toggleTheme', () => {
   it('moves to the next configured theme and wraps around', () => {
     const { controller, colorMode } = setup({ value: 'sepia', forced: true })

@@ -14,16 +14,18 @@ export default defineNuxtPlugin((nuxtApp) => {
   const { penumbra } = useRuntimeConfig().public
   const router = useRouter()
 
-  let navigating = false
+  // Targets of the navigations in flight. vue-router also runs `afterEach` for a navigation a newer one cancelled, so a
+  // boolean would turn false while the newer navigation is still running.
+  const navigating = new Set<string>()
   let pageTransition: ViewTransition | undefined
-  router.beforeEach(() => {
-    navigating = true
+  router.beforeEach((to) => {
+    navigating.add(to.fullPath)
   })
-  router.afterEach(() => {
-    navigating = false
+  router.afterEach((to) => {
+    navigating.delete(to.fullPath)
   })
   router.onError(() => {
-    navigating = false
+    navigating.clear()
   })
   // Nuxt's experimental page transitions run past `afterEach`, until the animation has finished.
   nuxtApp.hook(
@@ -46,17 +48,20 @@ export default defineNuxtPlugin((nuxtApp) => {
   )
 
   // Read lazily: color-mode's own plugin may run after this one.
-  const state = (): ThemeState => nuxtApp.runWithContext(useThemeState)
+  const state = (): ThemeState => nuxtApp.runWithContext(useThemeState) as ThemeState
   const controller = createController(state, penumbra, {
     nextTick,
-    isBusy: () => navigating || pageTransition !== undefined,
+    isBusy: () => navigating.size > 0 || pageTransition !== undefined,
     lastClick: () => (click !== undefined && Date.now() - click.at < CLICK_WINDOW ? click.event : undefined),
   })
 
+  // The store exists from the start, so a write before mount is stored and applied like any other.
+  const store = penumbra.mode === 'standalone' ? createStandaloneStore(penumbra, state()) : undefined
+
   nuxtApp.hook('app:mounted', () => {
-    if (penumbra.mode === 'standalone') {
+    if (store) {
       // After hydration, so the stored choice does not clash with the server-rendered markup.
-      createStandaloneStore(penumbra, state()).start()
+      store.start()
       return
     }
     // Color-mode mode: after its own hydration writes, so they are not animated.

@@ -14,10 +14,38 @@ export const EFFECTS = [
   'blur-circle',
   'diagonal',
   'diagonal-soft',
+  'square',
+  'triangle',
+  'sunburst',
+  'cross',
+  'heart',
+  'ripple',
+  'clock',
+  'curtain',
+  'stairs',
+  'mosaic',
+  'blur',
+  'flip',
+  'spin',
+  'cover',
+  'reveal',
 ] as const
 
 /** The effects that read the `direction` option. */
-export const DIRECTIONAL: readonly string[] = ['wipe', 'blinds']
+export const DIRECTIONAL: readonly string[] = [
+  'wipe',
+  'blinds',
+  'diagonal',
+  'diagonal-soft',
+  'scan',
+  'slide',
+  'stairs',
+  'cover',
+  'reveal',
+  'flip',
+  'split',
+  'curtain',
+]
 
 export const DIRECTIONS = ['right', 'left', 'down', 'up'] as const
 export type DirectionName = (typeof DIRECTIONS)[number]

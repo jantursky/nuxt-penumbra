@@ -7,9 +7,9 @@ The module does no server work in color-mode mode. What the server and the first
 
 ## Color-mode with cookie storage
 
-With cookie storage, the server knows the visitor's `preference`. Color-mode leaves `value` as `'system'` until the browser resolves it, which means the server cannot tell whether a `system` visitor sees light or dark.
+With cookie storage, the server knows the visitor's `preference`, but color-mode does not resolve `value` on the server: it stays at the configured default (`'system'` unless you changed it) until the browser has run. `usePenumbra().theme` therefore answers with the preference while it names a theme, and with the first light theme while the preference is `system`. The server cannot tell whether a `system` visitor sees light or dark.
 
-The `<html>` class is set by color-mode's inline head script before first paint. There is no flash. This was checked.
+The `<html>` class is set by color-mode's inline head script before first paint. There is no flash; the e2e test `behaviour.spec.ts` in the color-mode playground records every class change on `<html>` and finds no light class with a dark cookie.
 
 `usePenumbra().theme` is never `'system'`. While color-mode still reports `'system'`, it returns the visitor's choice when that is a concrete theme, and otherwise `light` (or the first theme in the list if `light` is not one of them).
 

@@ -1,7 +1,8 @@
 import type { NuxtModule } from '@nuxt/schema'
 import { addComponent, addImports, addPlugin, createResolver, defineNuxtModule, hasNuxtModule } from '@nuxt/kit'
 
-import { buildHeadScript, SYSTEM, supportsSystem } from './runtime/head-script'
+import { buildHeadScript, SYSTEM } from './runtime/head-script'
+import { validate } from './validate'
 
 export interface ModuleOptions {
   /**
@@ -27,6 +28,12 @@ export interface ModuleOptions {
 
 export type ResolvedOptions = Required<ModuleOptions>
 
+declare module '@nuxt/schema' {
+  interface PublicRuntimeConfig {
+    penumbra: ResolvedOptions
+  }
+}
+
 export type {
   Direction,
   Origin,
@@ -35,8 +42,6 @@ export type {
   TransitionContext,
   TransitionDefinition,
 } from './runtime/composables/usePenumbra'
-
-const NAME = /^[a-z][a-z0-9-]*$/i
 
 const penumbra: NuxtModule<ModuleOptions, ModuleOptions> = defineNuxtModule<ModuleOptions>({
   meta: {
@@ -57,6 +62,16 @@ const penumbra: NuxtModule<ModuleOptions, ModuleOptions> = defineNuxtModule<Modu
   },
   setup(options, nuxt) {
     const resolver = createResolver(import.meta.url)
+    nuxt.options.build.transpile.push(resolver.resolve('./runtime'))
+
+    // Registered at once, not after `modules:done`: the imports module has already scanned by then.
+    addPlugin(resolver.resolve('./runtime/plugin.client'))
+    addComponent({ name: 'PenumbraToggle', filePath: resolver.resolve('./runtime/components/PenumbraToggle.vue') })
+    addImports([
+      { name: 'usePenumbra', from: resolver.resolve('./runtime/composables/usePenumbra') },
+      { name: 'definePenumbraTransition', from: resolver.resolve('./runtime/composables/usePenumbra') },
+    ])
+
     // Wait for every module: Nuxt UI installs `@nuxtjs/color-mode` as a dependency of its own, after ours has been set up.
     nuxt.hook('modules:done', () => {
       const mode = options.mode ?? (hasNuxtModule('@nuxtjs/color-mode', nuxt) ? 'color-mode' : 'standalone')
@@ -72,7 +87,6 @@ const penumbra: NuxtModule<ModuleOptions, ModuleOptions> = defineNuxtModule<Modu
         throw new Error('nuxt-penumbra: mode "color-mode" needs `@nuxtjs/color-mode` in `modules`.')
       }
 
-      nuxt.options.build.transpile.push(resolver.resolve('./runtime'))
       nuxt.options.runtimeConfig.public.penumbra = resolved
 
       // Standalone mode has no color-mode script to prevent a flash, so it brings its own, first in <head>.
@@ -84,47 +98,8 @@ const penumbra: NuxtModule<ModuleOptions, ModuleOptions> = defineNuxtModule<Modu
           tagPriority: 'critical',
         })
       }
-
-      addPlugin(resolver.resolve('./runtime/plugin.client'))
-      addComponent({ name: 'PenumbraToggle', filePath: resolver.resolve('./runtime/components/PenumbraToggle.vue') })
-      addImports([
-        { name: 'usePenumbra', from: resolver.resolve('./runtime/composables/usePenumbra') },
-        { name: 'definePenumbraTransition', from: resolver.resolve('./runtime/composables/usePenumbra') },
-      ])
     })
   },
 })
 
 export default penumbra
-
-function validate(options: ResolvedOptions): void {
-  if (options.themes.length === 0) throw new Error('nuxt-penumbra: `themes` needs at least one theme.')
-  for (const theme of options.themes) {
-    if (!NAME.test(theme)) {
-      throw new Error(
-        `nuxt-penumbra: invalid theme name "${theme}". Use letters, digits and dashes, starting with a letter.`,
-      )
-    }
-  }
-  if (new Set(options.themes).size !== options.themes.length) {
-    throw new Error('nuxt-penumbra: `themes` contains duplicates.')
-  }
-  if (options.themes.includes(SYSTEM))
-    throw new Error('nuxt-penumbra: "system" is reserved and cannot be a theme name.')
-  if (options.mode === 'standalone') {
-    if (options.default === SYSTEM ? !supportsSystem(options.themes) : !options.themes.includes(options.default)) {
-      throw new Error(
-        options.default === SYSTEM
-          ? 'nuxt-penumbra: `default: "system"` needs the themes "light" and "dark".'
-          : `nuxt-penumbra: \`default\` "${options.default}" is not in \`themes\`.`,
-      )
-    }
-    if (!/^(class|data-[a-z][a-z0-9-]*)$/.test(options.attribute)) {
-      throw new Error(`nuxt-penumbra: \`attribute\` must be "class" or "data-*", got "${options.attribute}".`)
-    }
-    if (options.storageKey === '') throw new Error('nuxt-penumbra: `storageKey` cannot be empty.')
-  }
-  if (!Number.isFinite(options.duration) || options.duration < 0) {
-    throw new Error('nuxt-penumbra: `duration` must be a number of milliseconds, 0 or more.')
-  }
-}

@@ -20,6 +20,21 @@ const effects = [
   'blur-circle',
   'diagonal',
   'diagonal-soft',
+  'square',
+  'triangle',
+  'sunburst',
+  'cross',
+  'heart',
+  'ripple',
+  'clock',
+  'curtain',
+  'stairs',
+  'mosaic',
+  'blur',
+  'flip',
+  'spin',
+  'cover',
+  'reveal',
 ]
 
 test.beforeEach(async ({ page }) => {
@@ -43,7 +58,7 @@ test('every effect can be picked and run without console errors', async ({ page 
 
 test('the code beside the demo follows the controls', async ({ page }) => {
   await pickEffect(page, 'wipe')
-  await page.getByLabel('Direction (wipe and blinds)').selectOption('left')
+  await page.getByLabel('Direction (directional effects)').selectOption('left')
   await page.getByLabel('Easing').selectOption('linear')
   const component = page.getByRole('region', { name: 'Component' })
   await expect(component).toContainText('direction="left"')
@@ -53,8 +68,8 @@ test('the code beside the demo follows the controls', async ({ page }) => {
   await expect(page.getByRole('region', { name: 'nuxt.config.ts' })).toContainText("transition: 'wipe'")
 })
 
-test('the direction control is only enabled for wipe and blinds', async ({ page }) => {
-  const direction = page.getByLabel('Direction (wipe and blinds)')
+test('the direction control is only enabled for directional effects', async ({ page }) => {
+  const direction = page.getByLabel('Direction (directional effects)')
   await expect(direction).toBeDisabled()
   await pickEffect(page, 'blinds')
   await expect(direction).toBeEnabled()

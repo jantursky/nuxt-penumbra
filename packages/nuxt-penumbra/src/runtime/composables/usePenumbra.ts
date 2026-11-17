@@ -29,9 +29,14 @@ export function usePenumbra(): Penumbra {
   const injected = nuxtApp.$penumbra as (Controller & { themes: readonly string[] }) | undefined
   const injectedThemes = injected?.themes ?? useRuntimeConfig().public.penumbra.themes
   return {
-    // Until color-mode has resolved "system" in the browser, `value` is still the string "system": show the visitor's
-    // concrete choice if there is one, else the first light theme.
-    theme: computed(() => (state.value === 'system' ? fallback(state.preference, injectedThemes) : state.value)),
+    theme: computed(() => {
+      const { value, preference } = state
+      // Before color-mode has run in the browser, `value` is the configured default (or "system", or missing in a
+      // server island), not what the visitor chose. The preference is the better answer once it names a theme.
+      const unresolved =
+        typeof value !== 'string' || value === 'system' || ('unknown' in state && state.unknown === true)
+      return unresolved ? fallback(preference, injectedThemes) : value
+    }),
     preference: computed(() => state.preference),
     themes: injectedThemes,
     // On the server there is no page to animate: writing the preference is all a theme change means there.

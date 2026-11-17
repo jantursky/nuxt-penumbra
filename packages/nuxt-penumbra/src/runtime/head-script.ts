@@ -1,5 +1,8 @@
 export const SYSTEM = 'system'
 
+/** Set on `window` once the store has taken over from the head script's listeners. */
+export const HEAD_OFF = '__penumbraStore'
+
 export interface StandaloneConfig {
   themes: readonly string[]
   /** A theme name, or `'system'` to follow `prefers-color-scheme`. */
@@ -35,8 +38,8 @@ export function buildHeadScript(config: StandaloneConfig): string {
     `function r(){var v=p();return v=='system'?m.matches?'dark':'light':v}` +
     `function a(){var t=r();if(c.a=='class')c.t.forEach(function(x){h.classList.toggle(x,x==t)});` +
     `else h.setAttribute(c.a,t)}` +
-    `a();m.addEventListener('change',function(){p()=='system'&&a()});` +
-    `w.addEventListener('storage',function(e){(!e.key||e.key==c.k)&&a()})` +
+    `a();m.addEventListener('change',function(){!w.${HEAD_OFF}&&p()=='system'&&a()});` +
+    `w.addEventListener('storage',function(e){!w.${HEAD_OFF}&&(!e.key||e.key==c.k)&&a()})` +
     `})(window,document,${data})`
   )
 }

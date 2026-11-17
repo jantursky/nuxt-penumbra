@@ -37,7 +37,7 @@ function run(event: MouseEvent): void {
 
 <template>
   <div>
-    <p class="aside">Fifteen ways to switch</p>
+    <p class="aside">Thirty ways to switch</p>
     <h1 class="display">Transitions</h1>
     <p class="lede">
       Pick an effect, tune it, and run it on this very page. The code on the right is what you would write to get
@@ -61,7 +61,7 @@ function run(event: MouseEvent): void {
           </select>
         </div>
         <div class="field">
-          <label for="direction" class="label">Direction (wipe and blinds)</label>
+          <label for="direction" class="label">Direction (directional effects)</label>
           <select id="direction" v-model="direction" :disabled="!directional">
             <option v-for="option in DIRECTIONS" :key="option">{{ option }}</option>
           </select>

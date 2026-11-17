@@ -11,7 +11,7 @@ const props = defineProps<{
   transition?: string
   duration?: number
   easing?: string
-  /** Which way `wipe` and `blinds` travel. Default `'right'`. */
+  /** Which way directional effects travel. Default `'right'`. */
   direction?: Direction
 }>()
 

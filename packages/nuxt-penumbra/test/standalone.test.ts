@@ -58,12 +58,16 @@ beforeEach(() => {
   root.className = ''
   localStorage.clear()
 })
+const stores: { dispose: () => void }[] = []
 afterEach(() => {
+  // A started store listens on `window` for the rest of the file unless it is disposed.
+  for (const store of stores.splice(0)) store.dispose()
   vi.unstubAllGlobals()
 })
 
 function setup(config: StandaloneConfig = base) {
   const store = createStandaloneStore(config, reactive(initialState(config)))
+  stores.push(store)
   return store
 }
 
@@ -93,6 +97,21 @@ describe('store', () => {
     expect(root.getAttribute('data-theme')).toBe('sepia')
   })
 
+  it('ignores a stored "system" when the themes have no light and dark pair', () => {
+    mockMedia()
+    localStorage.setItem('penumbra-theme', 'system')
+    const { state, start } = setup({ ...base, themes: ['light', 'sepia'], default: 'sepia' })
+    start()
+    expect(state.preference).toBe('sepia')
+  })
+
+  it('uses the default when nothing is stored', () => {
+    mockMedia()
+    const { state, start } = setup({ ...base, default: 'sepia' })
+    start()
+    expect(state).toMatchObject({ preference: 'sepia', value: 'sepia' })
+  })
+
   it('falls back to the default for a stored value that is not a theme', () => {
     mockMedia(true)
     localStorage.setItem('penumbra-theme', 'nope')
@@ -111,13 +130,24 @@ describe('store', () => {
     expect(root.getAttribute('data-theme')).toBe('dark')
   })
 
-  it('ignores a write that is not a theme', () => {
+  it('puts the last valid choice back after a write that is not a theme', () => {
     mockMedia()
     const { state, start } = setup()
     start()
+    state.preference = 'dark'
     state.preference = 'nope'
-    expect(localStorage.getItem('penumbra-theme')).toBeNull()
-    expect(root.getAttribute('data-theme')).toBe('light')
+    expect(state.preference).toBe('dark')
+    expect(localStorage.getItem('penumbra-theme')).toBe('dark')
+    expect(root.getAttribute('data-theme')).toBe('dark')
+  })
+
+  it('hands the head script over to the store while it runs, and back after dispose', () => {
+    mockMedia()
+    const { start, dispose } = setup()
+    start()
+    expect((window as unknown as Record<string, unknown>).__penumbraStore).toBe(true)
+    dispose()
+    expect((window as unknown as Record<string, unknown>).__penumbraStore).toBeUndefined()
   })
 
   it('toggles classes in class mode and leaves other classes alone', () => {
@@ -188,6 +218,14 @@ describe('store', () => {
     const { state, start } = setup({ ...base, attribute: 'class' })
     start()
     expect(state.preference).toBe('dark')
+  })
+
+  it('uses the default when storage is unreadable and the page names no theme', () => {
+    mockMedia()
+    blockStorage({ read: true })
+    const { state, start } = setup({ ...base, default: 'sepia' })
+    start()
+    expect(state.preference).toBe('sepia')
   })
 
   it('still applies a choice when storage cannot be written', () => {
@@ -264,6 +302,17 @@ describe('head script', () => {
     expect(root.getAttribute('data-theme')).toBe('sepia')
     dispatchEvent(new StorageEvent('storage', { key: 'other' }))
     expect(root.getAttribute('data-theme')).toBe('sepia')
+  })
+
+  it('stops following the system and other tabs once the store has taken over', () => {
+    const media = mockMedia()
+    new Function(buildHeadScript(base))()
+    Object.assign(window, { __penumbraStore: true })
+    media.set(true)
+    localStorage.setItem('penumbra-theme', 'sepia')
+    dispatchEvent(new StorageEvent('storage', { key: 'penumbra-theme' }))
+    expect(root.getAttribute('data-theme')).toBe('light')
+    Reflect.deleteProperty(window, '__penumbraStore')
   })
 
   it('does not follow the system once a theme is stored', () => {
