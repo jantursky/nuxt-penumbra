@@ -11,3 +11,4 @@ apps/docs/docs/_generated/
 test-results/
 playwright-report/
 .size/
+packages/nuxt-penumbra/README.md

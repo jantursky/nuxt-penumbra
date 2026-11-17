@@ -28,7 +28,10 @@
     "lint:package": "bun run --filter nuxt-penumbra lint:package",
     "test:pack": "bun run --filter nuxt-penumbra test:pack",
     "size": "bun run --filter nuxt-penumbra size",
-    "test:e2e": "bun run --filter playground-color-mode test:e2e && bun run --filter playground-standalone test:e2e && bun run --filter playground-nuxt-ui test:e2e && bun run --filter demo test:e2e"
+    "test:e2e": "bun run --filter playground-color-mode test:e2e && bun run --filter playground-standalone test:e2e && bun run --filter playground-nuxt-ui test:e2e && bun run --filter demo test:e2e",
+    "gifs": "node scripts/gifs.js",
+    "screenshots": "node scripts/screenshots.js",
+    "sync:readme": "node scripts/readme.js"
   },
   "devDependencies": {
     "@eslint/js": "^10",
