@@ -1,6 +1,6 @@
 {
   "name": "nuxt-penumbra",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Nuxt module for animated theme switching on View Transitions: circle reveal, wipe, blinds and more. Works with @nuxtjs/color-mode and Nuxt UI, or on its own.",
   "license": "MIT",
   "author": {
