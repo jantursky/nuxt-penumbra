@@ -114,11 +114,23 @@ Thirty effects ship with the module. They come from [`penumbra-core`](https://gi
 | Firefox (Playwright build)  | no View Transitions API in this build, instant switch | 2026-11-17 |
 | Other browsers and versions | unverified                                            |            |
 
-Without the API the theme switches instantly and nothing throws. Nuxt 3, `ssr: false`, `nuxt generate`, `localStorage` color-mode storage with SSR, and real GPU Chrome for rapid toggling are unverified.
+Without the API the theme switches instantly and nothing throws. Real GPU Chrome for rapid toggling is unverified.
+
+### Nuxt versions and render modes
+
+Each combination below was installed from the packed tarball into a fresh project, built, opened in Chromium and toggled, with the choice checked after a reload. Last run: 2026-11-25. CI repeats it on every push.
+
+| Nuxt                        | Server rendering | `ssr: false` | `nuxt generate` | color-mode `localStorage` + SSR |
+| --------------------------- | ---------------- | ------------ | --------------- | ------------------------------- |
+| 3.12.4 (the declared floor) | checked          | checked      | checked         | checked                         |
+| 3.21.11                     | checked          | checked      | checked         | checked                         |
+| 4.7.0                       | checked          | checked      | checked         | checked                         |
+
+Server rendering, `ssr: false` and `nuxt generate` were each run in color-mode mode (cookie storage) and in standalone mode. A fresh install of Nuxt 3.12 resolves a newer `unstorage` that Nuxt 3.12 itself cannot render with, with or without this module, so the 3.12 run pins `unstorage@1.15.0`.
 
 ## Not covered yet
 
-- Nuxt 3 is not tested; the compatibility floor is a guess.
+- Nuxt versions between the ones in the table above.
 - Per-element transitions: the effect always covers the whole page.
 - Other tabs follow a theme change only in standalone mode, and without animation. `@nuxtjs/color-mode` does not sync tabs, so in color-mode mode they update on reload.
 

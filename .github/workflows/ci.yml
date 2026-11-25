@@ -74,17 +74,18 @@ jobs:
       - name: Build docs
         run: bun run --filter docs build
 
-  # The module declares Nuxt >=3.12, so the tarball is installed into a fresh project of each major and built.
+  # The module declares Nuxt >=3.12, so the tarball is installed into a fresh project of each Nuxt version, built in
+  # every render mode (server, `ssr: false`, `nuxt generate`) and toggled in Chromium. 3.12 is the declared floor.
   # The workspace itself only ever resolves one Nuxt version.
   nuxt-versions:
-    name: Pack test, Nuxt ${{ matrix.nuxt }}
+    name: Pack and browser test, Nuxt ${{ matrix.nuxt }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
     strategy:
       fail-fast: false
       matrix:
-        nuxt: ['3', '4']
+        nuxt: ['3.12', '3', '4']
     steps:
       - uses: actions/checkout@v7
       - uses: oven-sh/setup-bun@v2
@@ -98,7 +99,9 @@ jobs:
         run: |
           bun run prepare
           bun run build:lib
-      - name: Install the packed tarball and build a site with it
+      - name: Install Chromium
+        run: bunx playwright install --with-deps chromium
+      - name: Install the packed tarball, build a site with it and toggle the theme in Chromium
         env:
           NUXT_VERSION: ${{ matrix.nuxt }}
         run: bun run test:pack

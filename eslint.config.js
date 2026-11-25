@@ -81,5 +81,11 @@ export default defineConfig(
     languageOptions: { globals: { ...globals.node } },
   },
 
+  {
+    // Playwright runs the callbacks of this script inside the page, so they use browser globals too.
+    files: ['packages/nuxt-penumbra/scripts/pack-test.js'],
+    languageOptions: { globals: { ...globals.node, ...globals.browser } },
+  },
+
   prettier,
 )

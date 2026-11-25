@@ -4,6 +4,13 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [Unreleased]
 
+## [1.0.1]
+
+### Changed
+
+- Documentation: Nuxt 3.12.4, 3.21.11 and 4.7.0 were each built in server, `ssr: false` and `nuxt generate` modes, in both module modes, and toggled in Chromium. The compatibility notes now say what was checked and when, and no longer call the Nuxt 3 floor a guess.
+- Added type tests for the public API and a browser check for every Nuxt version and render mode in CI. No runtime change.
+
 ## [1.0.0]
 
 ### Added

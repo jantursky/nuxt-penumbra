@@ -34,14 +34,23 @@ All Chromium runs used Playwright's build. Rapid toggling in a Chrome with a rea
 
 ## Compatibility
 
-The module declares `nuxt: '>=3.12.0'`. That floor is a guess. The module was built and run on Nuxt 4. These have not been run:
+The module declares `nuxt: '>=3.12.0'`. The packed tarball was installed into a fresh project for each Nuxt version below, built in each render mode, opened in Chromium and toggled, and the choice was checked after a reload. Last run: 2026-11-25. CI repeats the run on every push.
 
-- Nuxt 3
-- `ssr: false`
-- `nuxt generate`
-- `@nuxtjs/color-mode` with `localStorage` storage and SSR
+| Nuxt                        | Server rendering | `ssr: false` | `nuxt generate` | color-mode `localStorage` + SSR |
+| --------------------------- | ---------------- | ------------ | --------------- | ------------------------------- |
+| 3.12.4 (the declared floor) | checked          | checked      | checked         | checked                         |
+| 3.21.11                     | checked          | checked      | checked         | checked                         |
+| 4.7.0                       | checked          | checked      | checked         | checked                         |
+
+Each render mode was run in color-mode mode (cookie storage) and in standalone mode. In standalone mode the stored theme was on `<html>` before the first paint in every build, and in every build the switch started a view transition. These have not been run:
+
+- Nuxt versions between the ones in the table
 - Safari, Edge, and Firefox with the API
-- Browser versions other than the ones in the table
+- Browser versions other than the ones in the table above
+
+:::note
+A fresh install of Nuxt 3.12 resolves a newer `unstorage` that Nuxt 3.12 itself cannot render with. A bare Nuxt 3.12.4 project fails the same way without this module. The 3.12 run pins `unstorage@1.15.0`; pin it too if you stay on 3.12.
+:::
 
 ## Feature detection
 

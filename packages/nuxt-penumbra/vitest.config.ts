@@ -4,6 +4,7 @@ export default defineConfig({
   test: {
     environment: 'happy-dom',
     include: ['test/**/*.test.ts'],
+    typecheck: { enabled: true, include: ['test/**/*.test-d.ts'], tsconfig: './tsconfig.json' },
     coverage: {
       provider: 'v8',
       include: [
