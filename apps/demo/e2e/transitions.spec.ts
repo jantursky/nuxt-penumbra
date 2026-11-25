@@ -44,6 +44,8 @@ test.beforeEach(async ({ page }) => {
 })
 
 test('every effect can be picked and run without console errors', async ({ page }) => {
+  // Thirty effects, each with a pause: slower than the default 30 s on a shared CI runner.
+  test.setTimeout(120_000)
   const errors = collectErrors(page)
   const html = page.locator('html')
   for (const [index, effect] of effects.entries()) {

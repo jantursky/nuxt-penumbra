@@ -4,6 +4,10 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [1.0.1]
 
+### Fixed
+
+- A theme change made right after `navigateTo()` or `router.push()` could start its own view transition just before Nuxt started the page transition. Chromium on Linux crashed the page when the two overlapped. A navigation now counts as running from the moment it is requested, so the theme change is applied without an effect, as intended.
+
 ### Changed
 
 - Documentation: Nuxt 3.12.4, 3.21.11 and 4.7.0 were each built in server, `ssr: false` and `nuxt generate` modes, in both module modes, and toggled in Chromium. The compatibility notes now say what was checked and when, and no longer call the Nuxt 3 floor a guess.

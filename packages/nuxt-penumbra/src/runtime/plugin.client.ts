@@ -27,6 +27,19 @@ export default defineNuxtPlugin((nuxtApp) => {
   router.onError(() => {
     navigating.clear()
   })
+  // `beforeEach` runs a few ticks after `push()`, once the leave guards have settled. A theme change made in that gap
+  // (`navigateTo()` followed by `toggleTheme()`) would start its own view transition just before Nuxt starts the page
+  // one, and Chromium crashes when two overlap. So a navigation counts from the moment it is requested.
+  let requested = 0
+  for (const method of ['push', 'replace'] as const) {
+    const original = router[method].bind(router)
+    router[method] = (to) => {
+      requested++
+      return original(to).finally(() => {
+        requested--
+      })
+    }
+  }
   // Nuxt's experimental page transitions run past `afterEach`, until the animation has finished.
   nuxtApp.hook(
     'page:view-transition:start' as never,
@@ -51,7 +64,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   const state = (): ThemeState => nuxtApp.runWithContext(useThemeState) as ThemeState
   const controller = createController(state, penumbra, {
     nextTick,
-    isBusy: () => navigating.size > 0 || pageTransition !== undefined,
+    isBusy: () => requested > 0 || navigating.size > 0 || pageTransition !== undefined,
     lastClick: () => (click !== undefined && Date.now() - click.at < CLICK_WINDOW ? click.event : undefined),
   })
 
